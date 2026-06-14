@@ -35,6 +35,12 @@ Run migrations:
 alembic upgrade head
 ```
 
+Seed sample lighthouse data:
+
+```powershell
+python -m scripts.seed_lighthouses
+```
+
 Start the API:
 
 ```powershell
@@ -56,4 +62,3 @@ ruff check .
 alembic revision --autogenerate -m "describe change"
 alembic upgrade head
 ```
-
