@@ -5,7 +5,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    app_name: str = "Lighthouse API"
+    app_name: str = "灯台API"
     environment: str = "local"
     database_url: str = "postgresql+asyncpg://lighthouse:lighthouse@localhost:5432/lighthouse"
     cors_origins: list[str] = Field(default_factory=lambda: ["http://localhost:3000"])
@@ -26,4 +26,3 @@ def get_settings() -> Settings:
 
 
 settings = get_settings()
-

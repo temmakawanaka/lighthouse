@@ -1,2 +1,1 @@
-"""Lighthouse backend application package."""
-
+"""灯台アプリのバックエンドパッケージ。"""

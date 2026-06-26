@@ -1,2 +1,1 @@
-"""Core application settings and utilities."""
-
+"""アプリケーション共通設定とユーティリティ。"""

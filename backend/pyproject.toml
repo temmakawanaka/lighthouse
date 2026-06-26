@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "lighthouse-backend"
 version = "0.1.0"
-description = "FastAPI backend for the Lighthouse app"
+description = "灯台アプリのFastAPIバックエンド"
 requires-python = ">=3.12"
 dependencies = [
   "alembic>=1.14.0,<2.0.0",

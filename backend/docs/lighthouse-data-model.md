@@ -1,34 +1,34 @@
-# Lighthouse Data Model Notes
+# 灯台データモデル設計メモ
 
-## Goal
+## 目的
 
-The API should return lighthouse records that can support:
+APIは、灯台レコードを以下の用途で返せるようにします。
 
-- map/list/detail views
-- historical and cultural descriptions
-- navigation-aid specifications
-- visitor information for climbable or public lighthouses
-- provenance for each manually curated record
+- 地図、一覧、詳細画面
+- 歴史・文化的な説明
+- 航路標識としての諸元
+- 参観可能な灯台や公開灯台の利用情報
+- 手作業で整備したデータの出典管理
 
-## Sample Sources
+## 初期サンプルの出典
 
-The first seed data uses public web sources for four real lighthouses:
+最初のseedデータでは、公開Webページから実在する灯台4件を採用しています。
 
-- Omaesaki Lighthouse: Omaezaki City official tourism page and Wikipedia
-- Inubosaki Lighthouse: Wikipedia, including linked Japan Coast Guard references
-- Tsunoshima Lighthouse: Wikipedia, including linked Japan Coast Guard references
-- Izumo Hinomisaki Lighthouse: Wikipedia Chinese edition, including technical specifications
+- 御前埼灯台: 御前崎市公式観光ページ、Wikipedia
+- 犬吠埼灯台: Wikipedia、およびそこから参照されている海上保安庁系情報
+- 角島灯台: Wikipedia、およびそこから参照されている海上保安庁系情報
+- 出雲日御碕灯台: Wikipedia中国語版、および技術諸元
 
-For production-grade curation, prefer source priority in this order:
+本番品質のデータ整備では、出典の優先度を以下の順にします。
 
-1. Japan Coast Guard pages and official notices
-2. municipality or prefectural tourism pages
-3. Tokokai pages for climbable and historical lighthouses
-4. secondary references such as Wikipedia only when primary pages are unavailable
+1. 海上保安庁のページ、告示、公式資料
+2. 自治体や都道府県の観光ページ
+3. 参観灯台や歴史的灯台を扱う燈光会ページ
+4. 一次情報が見つからない場合の補助情報としてのWikipediaなど
 
-## Confirmed Data Groups
+## 確定したデータ群
 
-### Identity
+### 識別情報
 
 - `name`
 - `slug`
@@ -36,7 +36,7 @@ For production-grade curation, prefer source priority in this order:
 - `english_name`
 - `description`
 
-### Location
+### 所在地
 
 - `country_code`
 - `prefecture`
@@ -46,9 +46,9 @@ For production-grade curation, prefer source priority in this order:
 - `latitude`
 - `longitude`
 
-Latitude and longitude are kept as decimals for now. If radius search, route search, or map clustering becomes central, add PostGIS later rather than changing the public API shape.
+緯度・経度は現時点ではdecimalで保持します。半径検索、ルート検索、地図クラスタリングが重要になった段階でPostGISを追加します。公開APIの形はそのまま維持できます。
 
-### Navigation Aid Specifications
+### 航路標識としての諸元
 
 - `jcg_number`
 - `admiralty_number`
@@ -66,9 +66,9 @@ Latitude and longitude are kept as decimals for now. If radius search, route sea
 - `tower_height_m`
 - `focal_height_m`
 
-These fields appeared repeatedly in public lighthouse pages and are useful for detail pages, filtering, and comparisons.
+これらは公開されている灯台情報で繰り返し登場し、詳細画面、絞り込み、比較表示で使いやすい項目です。
 
-### Visitor Information
+### 参観・観光情報
 
 - `is_visitable`
 - `visit_info`
@@ -77,28 +77,42 @@ These fields appeared repeatedly in public lighthouse pages and are useful for d
 - `parking_info`
 - `phone_number`
 
-Opening hours and fees change more often than structural specs, so they are intentionally stored as text notes for the first version. A normalized schedule table can be introduced once the UI needs calendar-aware behavior.
+営業時間や料金は構造諸元より変更されやすいため、最初のバージョンではテキストとして保持します。カレンダー表示や営業日判定が必要になった段階で、正規化したスケジュールテーブルを追加します。
 
-### Cultural / Editorial Labels
+### 文化財・編集ラベル
 
 - `heritage_status`
 - `selections`
 
-`selections` is JSONB because a lighthouse can belong to multiple editorial lists such as Japan's 50 Lighthouses, climbable lighthouses, or world lighthouse selections.
+`selections` はJSONBです。灯台は「日本の灯台50選」「登れる灯台」「世界灯台100選」など複数のリストに所属し得るためです。
 
-### Provenance
+### 出典
 
 - `source_urls`
 - `source_notes`
 
-Every manually curated lighthouse should keep at least one source URL. When sources disagree, write the adopted source and rationale in `source_notes`.
+手作業で整備した灯台レコードには、少なくとも1つの出典URLを保持します。出典によって値が食い違う場合は、採用した出典と理由を `source_notes` に記録します。
 
-## Seed Command
+## seed投入コマンド
 
 ```powershell
 cd backend
 .\.venv\Scripts\python.exe -m scripts.seed_lighthouses
 ```
 
-Run this after `alembic upgrade head`.
+`alembic upgrade head` のあとに実行します。
 
+## APIの取得パターン
+
+最初に対応する読み取りAPIです。
+
+- `GET /api/v1/lighthouses`
+- `GET /api/v1/lighthouses/{id}`
+- `GET /api/v1/lighthouses/slug/{slug}`
+- `GET /api/v1/lighthouses?q=犬吠埼`
+- `GET /api/v1/lighthouses?prefecture=千葉県`
+- `GET /api/v1/lighthouses?municipality=銚子市`
+- `GET /api/v1/lighthouses?is_visitable=true`
+- `GET /api/v1/lighthouses?north=36&south=35&east=141&west=140`
+
+地図範囲検索では `north`、`south`、`east`、`west` の4つを必須にします。一部だけ指定された場合に、意図しない半端な検索結果を返さないためです。

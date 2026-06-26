@@ -1,25 +1,25 @@
-# Lighthouse
+# 灯台アプリ
 
-Backend-first API project for the Lighthouse app.
+灯台情報を扱うためのバックエンドAPIプロジェクトです。まずはFastAPIでAPIとDBを固め、将来的にフロントエンドを追加していく前提です。
 
-## Stack
+## 技術スタック
 
 - FastAPI
 - SQLAlchemy 2 async ORM
-- Alembic migrations
+- Alembic migration
 - PostgreSQL
 - Pytest
 - Ruff
 
-## Local Development
+## ローカル開発
 
-Start PostgreSQL:
+PostgreSQLを起動します。
 
 ```powershell
 docker compose up -d db
 ```
 
-Create a backend environment:
+バックエンド用の仮想環境を作成します。
 
 ```powershell
 cd backend
@@ -29,36 +29,46 @@ pip install -e ".[dev]"
 Copy-Item .env.example .env
 ```
 
-Run migrations:
+DB migrationを実行します。
 
 ```powershell
 alembic upgrade head
 ```
 
-Seed sample lighthouse data:
+サンプルの灯台データを投入します。
 
 ```powershell
 python -m scripts.seed_lighthouses
 ```
 
-Start the API:
+APIを起動します。
 
 ```powershell
 uvicorn app.main:app --reload
 ```
 
-Open:
+起動後に確認するURLです。
 
 - API: http://localhost:8000
 - Swagger UI: http://localhost:8000/docs
 - OpenAPI JSON: http://localhost:8000/openapi.json
 
-## Useful Commands
+灯台APIの確認例です。
+
+```powershell
+Invoke-RestMethod "http://localhost:8000/api/v1/lighthouses"
+Invoke-RestMethod "http://localhost:8000/api/v1/lighthouses?prefecture=千葉県"
+Invoke-RestMethod "http://localhost:8000/api/v1/lighthouses?is_visitable=true"
+Invoke-RestMethod "http://localhost:8000/api/v1/lighthouses?q=犬吠埼"
+Invoke-RestMethod "http://localhost:8000/api/v1/lighthouses/slug/inubosaki"
+```
+
+## よく使うコマンド
 
 ```powershell
 cd backend
 pytest
 ruff check .
-alembic revision --autogenerate -m "describe change"
+alembic revision --autogenerate -m "変更内容の説明"
 alembic upgrade head
 ```
