@@ -11,7 +11,8 @@ def test_lighthouse_seed_data_is_valid() -> None:
     parsed_rows = [LighthouseCreate.model_validate(row) for row in rows]
     slugs = [row.slug for row in parsed_rows]
 
-    assert len(parsed_rows) >= 4
+    assert len(parsed_rows) == 16
     assert len(slugs) == len(set(slugs))
     assert all(row.source_urls for row in parsed_rows)
-
+    assert all(row.is_visitable is True for row in parsed_rows)
+    assert all("のぼれる灯台16" in row.selections for row in parsed_rows)

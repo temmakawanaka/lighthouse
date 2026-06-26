@@ -35,7 +35,7 @@ DB migrationを実行します。
 alembic upgrade head
 ```
 
-サンプルの灯台データを投入します。
+「のぼれる灯台16」のサンプルデータを投入します。
 
 ```powershell
 python -m scripts.seed_lighthouses
