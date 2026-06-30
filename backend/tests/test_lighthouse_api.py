@@ -6,6 +6,7 @@ from fastapi.testclient import TestClient
 
 from app.main import create_app
 from app.schemas.lighthouse import LighthouseRead
+from app.services.lighthouses import LighthouseListResult
 
 
 def make_lighthouse(slug: str = "inubosaki") -> LighthouseRead:
@@ -24,12 +25,15 @@ def make_lighthouse(slug: str = "inubosaki") -> LighthouseRead:
     )
 
 
-def test_list_lighthouses_forwards_search_filters(monkeypatch: Any) -> None:
+def test_list_lighthouses_returns_frontend_friendly_payload(monkeypatch: Any) -> None:
     captured: dict[str, Any] = {}
 
-    async def fake_list_lighthouses(*_: Any, **kwargs: Any) -> list[LighthouseRead]:
+    async def fake_list_lighthouses(*_: Any, **kwargs: Any) -> LighthouseListResult:
         captured.update(kwargs)
-        return [make_lighthouse()]
+        return LighthouseListResult(
+            items=[make_lighthouse(), make_lighthouse(slug="nojimasaki")],
+            total=3,
+        )
 
     monkeypatch.setattr(
         "app.api.v1.endpoints.lighthouses.lighthouse_service.list_lighthouses",
@@ -40,6 +44,8 @@ def test_list_lighthouses_forwards_search_filters(monkeypatch: Any) -> None:
         response = client.get(
             "/api/v1/lighthouses",
             params={
+                "limit": "2",
+                "offset": "0",
                 "q": "灯台",
                 "prefecture": "千葉県",
                 "municipality": "銚子市",
@@ -48,11 +54,21 @@ def test_list_lighthouses_forwards_search_filters(monkeypatch: Any) -> None:
                 "south": "35",
                 "east": "141",
                 "west": "140",
+                "sort_by": "name",
+                "sort_order": "desc",
             },
         )
 
+    body = response.json()
+
     assert response.status_code == 200
-    assert response.json()[0]["slug"] == "inubosaki"
+    assert [item["slug"] for item in body["items"]] == ["inubosaki", "nojimasaki"]
+    assert body["total"] == 3
+    assert body["limit"] == 2
+    assert body["offset"] == 0
+    assert body["has_more"] is True
+    assert body["sort_by"] == "name"
+    assert body["sort_order"] == "desc"
     assert captured["q"] == "灯台"
     assert captured["prefecture"] == "千葉県"
     assert captured["municipality"] == "銚子市"
@@ -61,6 +77,24 @@ def test_list_lighthouses_forwards_search_filters(monkeypatch: Any) -> None:
     assert captured["south"] == Decimal("35")
     assert captured["east"] == Decimal("141")
     assert captured["west"] == Decimal("140")
+    assert captured["sort_by"] == "name"
+    assert captured["sort_order"] == "desc"
+
+
+def test_list_lighthouses_marks_has_more_false_on_last_page(monkeypatch: Any) -> None:
+    async def fake_list_lighthouses(*_: Any, **__: Any) -> LighthouseListResult:
+        return LighthouseListResult(items=[make_lighthouse()], total=1)
+
+    monkeypatch.setattr(
+        "app.api.v1.endpoints.lighthouses.lighthouse_service.list_lighthouses",
+        fake_list_lighthouses,
+    )
+
+    with TestClient(create_app()) as client:
+        response = client.get("/api/v1/lighthouses", params={"limit": "10", "offset": "0"})
+
+    assert response.status_code == 200
+    assert response.json()["has_more"] is False
 
 
 def test_list_lighthouses_rejects_partial_map_bounds() -> None:

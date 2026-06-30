@@ -1,17 +1,100 @@
 from collections.abc import Sequence
+from dataclasses import dataclass
 from decimal import Decimal
 from uuid import UUID
 
-from sqlalchemy import Select, or_, select
+from sqlalchemy import Select, UnaryExpression, func, or_, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.lighthouse import Lighthouse
-from app.schemas.lighthouse import LighthouseCreate, LighthouseUpdate
+from app.schemas.lighthouse import (
+    LighthouseCreate,
+    LighthouseSortField,
+    LighthouseUpdate,
+    SortOrder,
+)
 
 
 class LighthouseConflict(Exception):
     pass
+
+
+@dataclass(slots=True)
+class LighthouseListResult:
+    items: Sequence[Lighthouse]
+    total: int
+
+
+def build_lighthouse_filters(
+    *,
+    q: str | None = None,
+    prefecture: str | None = None,
+    municipality: str | None = None,
+    is_visitable: bool | None = None,
+    north: Decimal | None = None,
+    south: Decimal | None = None,
+    east: Decimal | None = None,
+    west: Decimal | None = None,
+) -> list[object]:
+    filters: list[object] = []
+
+    if q:
+        pattern = f"%{q}%"
+        filters.append(
+            or_(
+                Lighthouse.name.ilike(pattern),
+                Lighthouse.name_kana.ilike(pattern),
+                Lighthouse.english_name.ilike(pattern),
+                Lighthouse.description.ilike(pattern),
+                Lighthouse.area_name.ilike(pattern),
+                Lighthouse.prefecture.ilike(pattern),
+                Lighthouse.municipality.ilike(pattern),
+            )
+        )
+
+    if prefecture:
+        filters.append(Lighthouse.prefecture == prefecture)
+
+    if municipality:
+        filters.append(Lighthouse.municipality == municipality)
+
+    if is_visitable is not None:
+        filters.append(Lighthouse.is_visitable.is_(is_visitable))
+
+    if None not in (north, south, east, west):
+        filters.extend(
+            [
+                Lighthouse.latitude <= north,
+                Lighthouse.latitude >= south,
+                Lighthouse.longitude <= east,
+                Lighthouse.longitude >= west,
+            ]
+        )
+
+    return filters
+
+
+def build_lighthouse_sort_expressions(
+    *,
+    sort_by: LighthouseSortField,
+    sort_order: SortOrder,
+) -> tuple[UnaryExpression[object], ...]:
+    is_desc = sort_order == SortOrder.DESC
+
+    if sort_by == LighthouseSortField.NAME:
+        columns = (Lighthouse.name,)
+    elif sort_by == LighthouseSortField.FIRST_LIT_DATE:
+        columns = (Lighthouse.first_lit_date, Lighthouse.name)
+    elif sort_by == LighthouseSortField.CREATED_AT:
+        columns = (Lighthouse.created_at, Lighthouse.name)
+    else:
+        columns = (Lighthouse.prefecture, Lighthouse.municipality, Lighthouse.name)
+
+    if is_desc:
+        return tuple(column.desc() for column in columns)
+
+    return tuple(column.asc() for column in columns)
 
 
 def build_lighthouse_list_statement(
@@ -26,45 +109,47 @@ def build_lighthouse_list_statement(
     south: Decimal | None = None,
     east: Decimal | None = None,
     west: Decimal | None = None,
+    sort_by: LighthouseSortField = LighthouseSortField.PREFECTURE,
+    sort_order: SortOrder = SortOrder.ASC,
 ) -> Select[tuple[Lighthouse]]:
-    statement = select(Lighthouse)
-
-    if q:
-        pattern = f"%{q}%"
-        statement = statement.where(
-            or_(
-                Lighthouse.name.ilike(pattern),
-                Lighthouse.name_kana.ilike(pattern),
-                Lighthouse.english_name.ilike(pattern),
-                Lighthouse.description.ilike(pattern),
-                Lighthouse.area_name.ilike(pattern),
-                Lighthouse.prefecture.ilike(pattern),
-                Lighthouse.municipality.ilike(pattern),
-            )
-        )
-
-    if prefecture:
-        statement = statement.where(Lighthouse.prefecture == prefecture)
-
-    if municipality:
-        statement = statement.where(Lighthouse.municipality == municipality)
-
-    if is_visitable is not None:
-        statement = statement.where(Lighthouse.is_visitable.is_(is_visitable))
-
-    if None not in (north, south, east, west):
-        statement = statement.where(
-            Lighthouse.latitude <= north,
-            Lighthouse.latitude >= south,
-            Lighthouse.longitude <= east,
-            Lighthouse.longitude >= west,
-        )
-
-    return (
-        statement.order_by(Lighthouse.prefecture, Lighthouse.municipality, Lighthouse.name)
-        .limit(limit)
-        .offset(offset)
+    filters = build_lighthouse_filters(
+        q=q,
+        prefecture=prefecture,
+        municipality=municipality,
+        is_visitable=is_visitable,
+        north=north,
+        south=south,
+        east=east,
+        west=west,
     )
+    order_by = build_lighthouse_sort_expressions(sort_by=sort_by, sort_order=sort_order)
+
+    return select(Lighthouse).where(*filters).order_by(*order_by).limit(limit).offset(offset)
+
+
+def build_lighthouse_count_statement(
+    *,
+    q: str | None = None,
+    prefecture: str | None = None,
+    municipality: str | None = None,
+    is_visitable: bool | None = None,
+    north: Decimal | None = None,
+    south: Decimal | None = None,
+    east: Decimal | None = None,
+    west: Decimal | None = None,
+) -> Select[tuple[int]]:
+    filters = build_lighthouse_filters(
+        q=q,
+        prefecture=prefecture,
+        municipality=municipality,
+        is_visitable=is_visitable,
+        north=north,
+        south=south,
+        east=east,
+        west=west,
+    )
+
+    return select(func.count()).select_from(Lighthouse).where(*filters)
 
 
 async def list_lighthouses(
@@ -80,8 +165,10 @@ async def list_lighthouses(
     south: Decimal | None = None,
     east: Decimal | None = None,
     west: Decimal | None = None,
-) -> Sequence[Lighthouse]:
-    result = await session.execute(
+    sort_by: LighthouseSortField = LighthouseSortField.PREFECTURE,
+    sort_order: SortOrder = SortOrder.ASC,
+) -> LighthouseListResult:
+    items_result = await session.execute(
         build_lighthouse_list_statement(
             limit=limit,
             offset=offset,
@@ -93,9 +180,26 @@ async def list_lighthouses(
             south=south,
             east=east,
             west=west,
+            sort_by=sort_by,
+            sort_order=sort_order,
         )
     )
-    return result.scalars().all()
+    count_result = await session.execute(
+        build_lighthouse_count_statement(
+            q=q,
+            prefecture=prefecture,
+            municipality=municipality,
+            is_visitable=is_visitable,
+            north=north,
+            south=south,
+            east=east,
+            west=west,
+        )
+    )
+    return LighthouseListResult(
+        items=items_result.scalars().all(),
+        total=count_result.scalar_one(),
+    )
 
 
 async def get_lighthouse(session: AsyncSession, lighthouse_id: UUID) -> Lighthouse | None:

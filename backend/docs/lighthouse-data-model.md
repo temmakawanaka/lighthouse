@@ -126,5 +126,34 @@ cd backend
 - `GET /api/v1/lighthouses?municipality=銚子市`
 - `GET /api/v1/lighthouses?is_visitable=true`
 - `GET /api/v1/lighthouses?north=36&south=35&east=141&west=140`
+- `GET /api/v1/lighthouses?limit=12&offset=0&sort_by=name&sort_order=asc`
 
 地図範囲検索では `north`、`south`、`east`、`west` の4つを必須にします。一部だけ指定された場合に、意図しない半端な検索結果を返さないためです。
+
+一覧APIは配列をそのまま返すのではなく、フロントエンドでページネーションを扱いやすいレスポンスにします。
+
+```json
+{
+  "items": [
+    {
+      "id": 1,
+      "name": "犬吠埼灯台",
+      "slug": "inubosaki",
+      "prefecture": "千葉県"
+    }
+  ],
+  "total": 16,
+  "limit": 12,
+  "offset": 0,
+  "has_more": true,
+  "sort_by": "prefecture",
+  "sort_order": "asc"
+}
+```
+
+- `items`: 実際の一覧データ
+- `total`: 現在の検索条件に一致する総件数
+- `limit` / `offset`: ページング条件の反映値
+- `has_more`: 次ページが存在するかどうか
+- `sort_by`: `prefecture` / `name` / `first_lit_date` / `created_at`
+- `sort_order`: `asc` / `desc`

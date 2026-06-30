@@ -6,7 +6,14 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.session import get_session
-from app.schemas.lighthouse import LighthouseCreate, LighthouseRead, LighthouseUpdate
+from app.schemas.lighthouse import (
+    LighthouseCreate,
+    LighthouseListResponse,
+    LighthouseRead,
+    LighthouseSortField,
+    LighthouseUpdate,
+    SortOrder,
+)
 from app.services import lighthouses as lighthouse_service
 
 router = APIRouter(prefix="/lighthouses", tags=["灯台"])
@@ -18,6 +25,8 @@ PrefectureQuery = Annotated[str | None, Query(min_length=1, max_length=40)]
 MunicipalityQuery = Annotated[str | None, Query(min_length=1, max_length=80)]
 LatitudeQuery = Annotated[Decimal | None, Query(ge=-90, le=90)]
 LongitudeQuery = Annotated[Decimal | None, Query(ge=-180, le=180)]
+SortByQuery = Annotated[LighthouseSortField, Query()]
+SortOrderQuery = Annotated[SortOrder, Query()]
 
 
 def validate_map_bounds(
@@ -50,7 +59,7 @@ def validate_map_bounds(
         )
 
 
-@router.get("", response_model=list[LighthouseRead])
+@router.get("", response_model=LighthouseListResponse)
 async def list_lighthouses(
     session: SessionDep,
     limit: LimitQuery = 50,
@@ -63,22 +72,33 @@ async def list_lighthouses(
     south: LatitudeQuery = None,
     east: LongitudeQuery = None,
     west: LongitudeQuery = None,
-) -> list[LighthouseRead]:
+    sort_by: SortByQuery = LighthouseSortField.PREFECTURE,
+    sort_order: SortOrderQuery = SortOrder.ASC,
+) -> LighthouseListResponse:
     validate_map_bounds(north=north, south=south, east=east, west=west)
-    return list(
-        await lighthouse_service.list_lighthouses(
-            session,
-            limit=limit,
-            offset=offset,
-            q=q,
-            prefecture=prefecture,
-            municipality=municipality,
-            is_visitable=is_visitable,
-            north=north,
-            south=south,
-            east=east,
-            west=west,
-        )
+    result = await lighthouse_service.list_lighthouses(
+        session,
+        limit=limit,
+        offset=offset,
+        q=q,
+        prefecture=prefecture,
+        municipality=municipality,
+        is_visitable=is_visitable,
+        north=north,
+        south=south,
+        east=east,
+        west=west,
+        sort_by=sort_by,
+        sort_order=sort_order,
+    )
+    return LighthouseListResponse(
+        items=list(result.items),
+        total=result.total,
+        limit=limit,
+        offset=offset,
+        has_more=offset + len(result.items) < result.total,
+        sort_by=sort_by,
+        sort_order=sort_order,
     )
 
 

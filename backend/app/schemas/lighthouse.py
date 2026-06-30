@@ -1,10 +1,23 @@
 from datetime import date, datetime
 from decimal import Decimal
+from enum import StrEnum
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
 
 SLUG_PATTERN = r"^[a-z0-9]+(?:-[a-z0-9]+)*$"
+
+
+class LighthouseSortField(StrEnum):
+    PREFECTURE = "prefecture"
+    NAME = "name"
+    FIRST_LIT_DATE = "first_lit_date"
+    CREATED_AT = "created_at"
+
+
+class SortOrder(StrEnum):
+    ASC = "asc"
+    DESC = "desc"
 
 
 class LighthouseBase(BaseModel):
@@ -99,3 +112,13 @@ class LighthouseRead(LighthouseBase):
     updated_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class LighthouseListResponse(BaseModel):
+    items: list[LighthouseRead]
+    total: int = Field(ge=0)
+    limit: int = Field(ge=1)
+    offset: int = Field(ge=0)
+    has_more: bool
+    sort_by: LighthouseSortField
+    sort_order: SortOrder

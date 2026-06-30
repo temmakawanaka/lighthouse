@@ -60,8 +60,32 @@ Invoke-RestMethod "http://localhost:8000/api/v1/lighthouses"
 Invoke-RestMethod "http://localhost:8000/api/v1/lighthouses?prefecture=千葉県"
 Invoke-RestMethod "http://localhost:8000/api/v1/lighthouses?is_visitable=true"
 Invoke-RestMethod "http://localhost:8000/api/v1/lighthouses?q=犬吠埼"
+Invoke-RestMethod "http://localhost:8000/api/v1/lighthouses?limit=12&offset=0&sort_by=name&sort_order=asc"
 Invoke-RestMethod "http://localhost:8000/api/v1/lighthouses/slug/inubosaki"
 ```
+
+一覧API `GET /api/v1/lighthouses` は、フロントエンドで扱いやすいように次の形式で返します。
+
+```json
+{
+  "items": [
+    {
+      "id": 1,
+      "name": "犬吠埼灯台",
+      "slug": "inubosaki",
+      "prefecture": "千葉県"
+    }
+  ],
+  "total": 16,
+  "limit": 12,
+  "offset": 0,
+  "has_more": true,
+  "sort_by": "prefecture",
+  "sort_order": "asc"
+}
+```
+
+`items` に一覧データ本体、`total` に検索条件込みの総件数、`has_more` に次ページ有無が入ります。
 
 ## よく使うコマンド
 
