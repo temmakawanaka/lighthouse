@@ -137,6 +137,8 @@ npm run lint
 npm run typecheck
 npm test
 npm run build
+npm run test:http-status
+npm run audit:production
 ```
 
 DBモデルを変更する場合は、Alembic migrationを作成して適用します。
