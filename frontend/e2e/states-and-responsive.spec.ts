@@ -42,7 +42,7 @@ test("代表的な画面幅で主要要素が表示され、横スクロール�
 
 test("カードから正常な詳細画面へ移動できる", async ({ page }) => {
   await page.goto("/?q=犬吠");
-  await page.getByRole("link", { name: /詳細を見る/ }).click();
+  await page.getByRole("link", { name: /灯台の記録を見る/ }).click();
 
   await expect(page).toHaveURL(/\/lighthouses\/inubosaki$/);
   await expect(page.getByRole("heading", { name: "犬吠埼灯台", level: 1 })).toBeVisible();
