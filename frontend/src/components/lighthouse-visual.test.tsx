@@ -22,4 +22,10 @@ describe("LighthouseVisual", () => {
       "sea-card-kannonzaki",
     ]);
   });
+
+  it("adds an accessible image label when one is supplied", () => {
+    const view = render(<LighthouseVisual visualId="inubosaki" label="犬吠埼灯台の図版" />);
+
+    expect(view.getByRole("img", { name: "犬吠埼灯台の図版" })).toBeInTheDocument();
+  });
 });
