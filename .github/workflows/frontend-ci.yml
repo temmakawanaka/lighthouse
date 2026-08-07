@@ -72,8 +72,8 @@ jobs:
       - name: Run ${{ matrix.name }}
         run: ${{ matrix.command }}
 
-      - name: Upload Playwright report
-        if: failure() && matrix.playwright == true
+      - name: Upload Playwright report and review images
+        if: always() && matrix.playwright == true
         uses: actions/upload-artifact@v5
         with:
           name: playwright-report
