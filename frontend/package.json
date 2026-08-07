@@ -9,6 +9,7 @@
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "test:http-status": "npm run build && node scripts/test-http-status.mjs",
     "audit:production": "npm audit --omit=dev --audit-level=moderate"
   },
   "dependencies": {

@@ -1,4 +1,4 @@
-export default function Loading() {
+export default function HomeLoading() {
   return (
     <main id="main-content">
       <div className="loading-hero" aria-hidden="true" />

@@ -13,9 +13,9 @@ import { buildPageHref, parseListQuery, type RawSearchParams } from "@/lib/query
 
 export const dynamic = "force-dynamic";
 
-interface HomePageProps {
+type HomePageProps = {
   searchParams: Promise<RawSearchParams>;
-}
+};
 
 export default async function HomePage({ searchParams }: HomePageProps) {
   const query = parseListQuery(await searchParams);

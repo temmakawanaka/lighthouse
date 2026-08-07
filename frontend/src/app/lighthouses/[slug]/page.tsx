@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 
-import { getLighthouseBySlug, LighthouseApiError } from "@/api/lighthouses";
 import { BackToListLink } from "@/components/back-to-list-link";
 import { DetailSection, hasVisibleDetailValue } from "@/components/detail-section";
 import { LighthouseVisual } from "@/components/lighthouse-visual";
@@ -13,19 +11,12 @@ import {
   sourceLabel,
 } from "@/lib/format";
 
+import { loadLighthouse } from "./load-lighthouse";
+
 export const dynamic = "force-dynamic";
 
 interface LighthouseDetailPageProps {
   params: Promise<{ slug: string }>;
-}
-
-async function loadLighthouse(slug: string) {
-  try {
-    return await getLighthouseBySlug(slug);
-  } catch (error) {
-    if (error instanceof LighthouseApiError && error.status === 404) notFound();
-    throw error;
-  }
 }
 
 export async function generateMetadata({ params }: LighthouseDetailPageProps): Promise<Metadata> {
