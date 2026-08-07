@@ -45,9 +45,8 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                 日本の海辺をめぐる案内帖
               </p>
               <h1>
-                海の道しるべを、
-                <br />
-                次の旅の目的地に。
+                <span>海の道しるべを、</span>
+                <span>次の旅の目的地に。</span>
               </h1>
               <p className="hero__lead">
                 日本各地の灯台を、土地の歴史や海の景色とともに。名前や地域から、次に訪れたい一基を探せます。
