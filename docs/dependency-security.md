@@ -18,18 +18,18 @@
 - 本番依存関係に中程度以上の脆弱性がある場合、`npm run audit:production` を失敗させます。
 - インストールにはlockfileを利用する `npm ci` を使います。
 - `npm audit fix --force` は、フレームワークの破壊的な変更を招く可能性があるため使用しません。
-- 更新は、直接依存関係の更新、フレームワーク側の修正版への更新、または互換性を検証した `overrides` の順に検討します。
+- 更新は、直接依存関係の修正版、フレームワーク側の修正版、または互換性を検証した `overrides` の順に検討します。
 
-## PostCSSの対応
+## Next.js・PostCSS・sharpの対応
 
-Next.js 16.2.10はPostCSS 8.4.31を直接指定しています。このバージョンは、`GHSA-qx2v-qp2m-jg93` の影響範囲である8.5.10未満に含まれます。
+2026年7月に公開されたNext.js、PostCSS、sharpのAdvisoryに対応するため、Next.jsを16.3.0へ更新しています。このバージョンは、修正版のPostCSS 8.5.23とsharp 0.35.3を依存関係として採用しています。
 
-`frontend/package.json` の `overrides` でPostCSS 8.5.19を使用し、脆弱なバージョンがインストールされないようにします。更新時は次を確認します。
+フレームワークが修正版を直接指定しているため、PostCSSやsharpの個別overrideは使用しません。依存関係の更新時は次を確認します。
 
 ```bash
 cd frontend
 npm ci
-npm ls postcss
+npm ls next postcss sharp
 npm run audit:production
 npm run lint
 npm run typecheck
