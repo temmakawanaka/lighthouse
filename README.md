@@ -138,7 +138,15 @@ npm run typecheck
 npm test
 npm run build
 npm run test:http-status
+npm run test:e2e
 npm run audit:production
+```
+
+初回のE2Eテスト前に、Chromiumをインストールします。
+
+```powershell
+cd frontend
+npx playwright install chromium
 ```
 
 DBモデルを変更する場合は、Alembic migrationを作成して適用します。
