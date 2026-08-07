@@ -7,17 +7,25 @@ import { LighthouseVisual } from "./lighthouse-visual";
 
 interface LighthouseCardProps {
   lighthouse: Lighthouse;
+  sequence?: number;
 }
 
-export function LighthouseCard({ lighthouse }: LighthouseCardProps) {
+export function LighthouseCard({ lighthouse, sequence }: LighthouseCardProps) {
   const year = formatYear(lighthouse.first_lit_date, lighthouse.built_year);
 
   return (
     <article className="lighthouse-card">
-      <LighthouseVisual
-        visualId={lighthouse.slug}
-        label={`${lighthouse.name}のイメージイラスト`}
-      />
+      <div className="lighthouse-card__visual">
+        <LighthouseVisual
+          visualId={lighthouse.slug}
+          label={`${lighthouse.name}のイメージ図版`}
+        />
+        {sequence && (
+          <span className="lighthouse-card__number" aria-hidden="true">
+            {String(sequence).padStart(2, "0")}
+          </span>
+        )}
+      </div>
       <div className="lighthouse-card__body">
         <div className="eyebrow-row">
           <span className="location-label">
@@ -37,7 +45,7 @@ export function LighthouseCard({ lighthouse }: LighthouseCardProps) {
         <div className="lighthouse-card__footer">
           <span>{year ? `初点灯 ${year}` : "初点灯年 調査中"}</span>
           <Link className="text-link" href={`/lighthouses/${lighthouse.slug}`}>
-            詳細を見る
+            灯台の記録を見る
             <span aria-hidden="true">→</span>
           </Link>
         </div>
