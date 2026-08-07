@@ -22,9 +22,18 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <SiteHeader />
         {children}
         <footer className="site-footer">
-          <div className="shell">
-            <p>灯台を知り、海辺への旅をもっと楽しむためのガイド。</p>
-            <small>参観前には、必ず公式サイトで最新情報をご確認ください。</small>
+          <div className="shell site-footer__inner">
+            <div className="site-footer__brand">
+              <span aria-hidden="true">灯</span>
+              <p>
+                <strong>灯台アプリ</strong>
+                <small>LIGHTHOUSE FIELD GUIDE</small>
+              </p>
+            </div>
+            <div className="site-footer__note">
+              <p>灯台を知り、海辺への旅をもっと楽しむためのガイド。</p>
+              <small>参観前には、必ず公式サイトで最新情報をご確認ください。</small>
+            </div>
           </div>
         </footer>
       </body>
