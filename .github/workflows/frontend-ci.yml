@@ -41,6 +41,8 @@ jobs:
             command: npm test
           - name: Build
             command: npm run build
+          - name: HTTP integration
+            command: npm run test:http-status
           - name: Production dependency audit
             command: npm run audit:production
     defaults:
