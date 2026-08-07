@@ -90,11 +90,12 @@ export default async function LighthouseDetailPage({ params }: LighthouseDetailP
               <LighthouseVisual
                 visualId={lighthouse.slug}
                 size="detail"
-                label={`${lighthouse.name}のイメージイラスト`}
+                label={`${lighthouse.name}のイメージ図版`}
               />
-              <span className="image-note">写真は準備中です</span>
+              <span className="image-note">ILLUSTRATION / 図版</span>
             </div>
             <div className="detail-hero__content">
+              <p className="detail-hero__record">LIGHTHOUSE RECORD</p>
               <p className="location-label location-label--large">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M12 21s7-6.1 7-12a7 7 0 1 0-14 0c0 5.9 7 12 7 12Z" />
@@ -122,6 +123,16 @@ export default async function LighthouseDetailPage({ params }: LighthouseDetailP
               <p className="detail-hero__description">
                 {lighthouse.description ?? "この灯台の詳しい紹介は準備中です。"}
               </p>
+              <dl className="detail-highlight-list">
+                <div>
+                  <dt>初点灯</dt>
+                  <dd>{formatDate(lighthouse.first_lit_date) ?? "調査中"}</dd>
+                </div>
+                <div>
+                  <dt>塔高</dt>
+                  <dd>{formatNumber(lighthouse.tower_height_m, "m") ?? "調査中"}</dd>
+                </div>
+              </dl>
             </div>
           </header>
 
