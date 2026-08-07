@@ -32,4 +32,28 @@ describe("DetailSection", () => {
 
     expect(view.container).toBeEmptyDOMElement();
   });
+
+  it.each([null, undefined, "", "   "])("hides an empty value: %p", (value) => {
+    const view = render(
+      <DetailSection
+        title="歴史・基本情報"
+        eyebrow="HISTORY"
+        items={[{ label: "管理者", value }]}
+      />,
+    );
+
+    expect(view.container).toBeEmptyDOMElement();
+  });
+
+  it("trims a displayed string value", () => {
+    render(
+      <DetailSection
+        title="歴史・基本情報"
+        eyebrow="HISTORY"
+        items={[{ label: "管理者", value: "  海上保安庁  " }]}
+      />,
+    );
+
+    expect(screen.getByText("海上保安庁")).toBeInTheDocument();
+  });
 });

@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 
 import { getLighthouseBySlug, LighthouseApiError } from "@/api/lighthouses";
 import { BackToListLink } from "@/components/back-to-list-link";
-import { DetailSection } from "@/components/detail-section";
+import { DetailSection, hasVisibleDetailValue } from "@/components/detail-section";
 import { LighthouseVisual } from "@/components/lighthouse-visual";
 import {
   formatDate,
@@ -96,7 +96,11 @@ export default async function LighthouseDetailPage({ params }: LighthouseDetailP
         <article>
           <header className="detail-hero">
             <div className="detail-hero__visual">
-              <LighthouseVisual size="detail" label={`${lighthouse.name}のイメージイラスト`} />
+              <LighthouseVisual
+                visualId={lighthouse.slug}
+                size="detail"
+                label={`${lighthouse.name}のイメージイラスト`}
+              />
               <span className="image-note">写真は準備中です</span>
             </div>
             <div className="detail-hero__content">
@@ -138,7 +142,7 @@ export default async function LighthouseDetailPage({ params }: LighthouseDetailP
                 eyebrow="SPECIFICATIONS"
                 items={specificationItems}
               />
-              {visitItems.some((item) => item.value) ? (
+              {visitItems.some((item) => hasVisibleDetailValue(item.value)) ? (
                 <DetailSection title="参観情報" eyebrow="VISIT" items={visitItems} />
               ) : (
                 <section className="detail-section">

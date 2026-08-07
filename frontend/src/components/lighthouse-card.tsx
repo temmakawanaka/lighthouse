@@ -14,7 +14,10 @@ export function LighthouseCard({ lighthouse }: LighthouseCardProps) {
 
   return (
     <article className="lighthouse-card">
-      <LighthouseVisual label={`${lighthouse.name}のイメージイラスト`} />
+      <LighthouseVisual
+        visualId={lighthouse.slug}
+        label={`${lighthouse.name}のイメージイラスト`}
+      />
       <div className="lighthouse-card__body">
         <div className="eyebrow-row">
           <span className="location-label">

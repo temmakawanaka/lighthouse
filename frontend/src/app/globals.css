@@ -69,7 +69,7 @@ button:disabled {
 }
 
 :focus-visible {
-  outline: 3px solid var(--sun-500);
+  outline: 3px solid var(--coral-500);
   outline-offset: 3px;
 }
 

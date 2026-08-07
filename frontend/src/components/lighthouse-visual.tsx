@@ -1,9 +1,14 @@
 interface LighthouseVisualProps {
+  visualId: string;
   size?: "card" | "hero" | "detail";
   label?: string;
 }
 
-export function LighthouseVisual({ size = "card", label }: LighthouseVisualProps) {
+export function LighthouseVisual({ visualId, size = "card", label }: LighthouseVisualProps) {
+  const idSuffix = `${size}-${visualId.replace(/[^a-zA-Z0-9_-]/g, "-")}`;
+  const skyId = `sky-${idSuffix}`;
+  const seaId = `sea-${idSuffix}`;
+
   return (
     <div
       className={`lighthouse-visual lighthouse-visual--${size}`}
@@ -13,18 +18,18 @@ export function LighthouseVisual({ size = "card", label }: LighthouseVisualProps
     >
       <svg viewBox="0 0 640 360" focusable="false">
         <defs>
-          <linearGradient id={`sky-${size}`} x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id={skyId} x1="0" y1="0" x2="0" y2="1">
             <stop offset="0" stopColor="#bfe7e8" />
             <stop offset="1" stopColor="#f6eee0" />
           </linearGradient>
-          <linearGradient id={`sea-${size}`} x1="0" y1="0" x2="1" y2="1">
+          <linearGradient id={seaId} x1="0" y1="0" x2="1" y2="1">
             <stop offset="0" stopColor="#0b6670" />
             <stop offset="1" stopColor="#0b354d" />
           </linearGradient>
         </defs>
-        <rect width="640" height="360" fill={`url(#sky-${size})`} />
+        <rect width="640" height="360" fill={`url(#${skyId})`} />
         <circle cx="516" cy="70" r="30" fill="#f7b957" opacity=".92" />
-        <path d="M0 214c91-36 168-25 250 3 86 30 167 22 249-7 56-20 102-15 141 5v145H0V214Z" fill={`url(#sea-${size})`} />
+        <path d="M0 214c91-36 168-25 250 3 86 30 167 22 249-7 56-20 102-15 141 5v145H0V214Z" fill={`url(#${seaId})`} />
         <path d="M0 247c82-25 156-16 235 11 103 35 198 30 280 1 45-16 87-16 125-3" fill="none" stroke="#dff3ef" strokeWidth="7" opacity=".65" />
         <path d="M340 309 366 119h68l26 190H340Z" fill="#f9f6ed" />
         <path d="m366 119 7-42h54l7 42h-68Z" fill="#f9f6ed" />

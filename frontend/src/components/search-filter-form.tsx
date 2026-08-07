@@ -1,45 +1,21 @@
 "use client";
 
-import { FormEvent, useTransition } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { FormEvent } from "react";
 
 import { PREFECTURES } from "@/lib/constants";
 
-interface SearchFilterFormProps {
-  q: string;
-  prefecture: string;
-  visitable: boolean;
-}
+import { useSearchNavigation } from "./search-navigation-provider";
 
-export function SearchFilterForm({ q, prefecture, visitable }: SearchFilterFormProps) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const [isPending, startTransition] = useTransition();
-
-  function update(updates: Record<string, string | null>) {
-    const params = new URLSearchParams(searchParams.toString());
-
-    for (const [key, value] of Object.entries(updates)) {
-      if (value) params.set(key, value);
-      else params.delete(key);
-    }
-    params.delete("page");
-
-    startTransition(() => {
-      const queryString = params.toString();
-      router.push(queryString ? `${pathname}?${queryString}` : pathname);
-    });
-  }
+export function SearchFilterForm() {
+  const { clearSearchParams, isPending, params, updateSearchParams } = useSearchNavigation();
+  const q = params.get("q") ?? "";
+  const prefecture = params.get("prefecture") ?? "";
+  const visitable = params.get("visitable") === "true";
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    update({ q: String(formData.get("q") ?? "").trim() || null });
-  }
-
-  function clearFilters() {
-    startTransition(() => router.push(pathname));
+    updateSearchParams({ q: String(formData.get("q") ?? "").trim() || null });
   }
 
   return (
@@ -68,7 +44,9 @@ export function SearchFilterForm({ q, prefecture, visitable }: SearchFilterFormP
         <select
           id="prefecture"
           value={prefecture}
-          onChange={(event) => update({ prefecture: event.target.value || null })}
+          onChange={(event) =>
+            updateSearchParams({ prefecture: event.target.value || null })
+          }
         >
           <option value="">全国</option>
           {PREFECTURES.map((item) => (
@@ -83,7 +61,9 @@ export function SearchFilterForm({ q, prefecture, visitable }: SearchFilterFormP
         <input
           type="checkbox"
           checked={visitable}
-          onChange={(event) => update({ visitable: event.target.checked ? "true" : null })}
+          onChange={(event) =>
+            updateSearchParams({ visitable: event.target.checked ? "true" : null })
+          }
         />
         <span>登れる灯台のみ</span>
       </label>
@@ -92,7 +72,7 @@ export function SearchFilterForm({ q, prefecture, visitable }: SearchFilterFormP
         <button className="button button--primary" type="submit" disabled={isPending}>
           {isPending ? "検索中…" : "検索する"}
         </button>
-        <button className="button button--quiet" type="button" onClick={clearFilters}>
+        <button className="button button--quiet" type="button" onClick={clearSearchParams}>
           条件をクリア
         </button>
       </div>

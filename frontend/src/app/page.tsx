@@ -6,6 +6,7 @@ import { LighthouseCard } from "@/components/lighthouse-card";
 import { LighthouseVisual } from "@/components/lighthouse-visual";
 import { Pagination } from "@/components/pagination";
 import { SearchFilterForm } from "@/components/search-filter-form";
+import { SearchNavigationProvider } from "@/components/search-navigation-provider";
 import { SortSelect } from "@/components/sort-select";
 import { PAGE_SIZE } from "@/lib/constants";
 import { buildPageHref, parseListQuery, type RawSearchParams } from "@/lib/query-params";
@@ -30,9 +31,12 @@ export default async function HomePage({ searchParams }: HomePageProps) {
     query.prefecture || null,
     query.visitable ? "登れる灯台" : null,
   ].filter(Boolean);
+  const initialHref = buildPageHref(query, query.page);
+  const initialQueryString = initialHref.startsWith("/?") ? initialHref.slice(2) : "";
 
   return (
-    <main id="main-content">
+    <SearchNavigationProvider key={initialQueryString} initialQueryString={initialQueryString}>
+      <main id="main-content">
       <section className="hero">
         <div className="shell hero__inner">
           <div className="hero__copy">
@@ -55,7 +59,11 @@ export default async function HomePage({ searchParams }: HomePageProps) {
             </div>
           </div>
           <div className="hero__art">
-            <LighthouseVisual size="hero" label="海辺に立つ灯台のイラスト" />
+            <LighthouseVisual
+              visualId="home-hero"
+              size="hero"
+              label="海辺に立つ灯台のイラスト"
+            />
             <div className="hero__note">
               <span aria-hidden="true">✦</span>
               <p>
@@ -73,11 +81,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
             <p className="kicker">FIND A LIGHTHOUSE</p>
             <h2 id="search-heading">のぼれる灯台を探す</h2>
           </div>
-          <SearchFilterForm
-            q={query.q}
-            prefecture={query.prefecture}
-            visitable={query.visitable}
-          />
+          <SearchFilterForm />
         </div>
       </section>
 
@@ -93,7 +97,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                 <p className="active-conditions">条件：{activeConditions.join("・")}</p>
               )}
             </div>
-            <SortSelect value={query.sort} />
+            <SortSelect />
           </div>
 
           <p className="sr-only" aria-live="polite">
@@ -114,6 +118,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           )}
         </div>
       </section>
-    </main>
+      </main>
+    </SearchNavigationProvider>
   );
 }

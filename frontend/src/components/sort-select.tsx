@@ -1,30 +1,23 @@
 "use client";
 
-import { useTransition } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-
 import type { SortOption } from "@/lib/query-params";
 
-interface SortSelectProps {
-  value: SortOption;
-}
+import { useSearchNavigation } from "./search-navigation-provider";
 
-export function SortSelect({ value }: SortSelectProps) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const [isPending, startTransition] = useTransition();
+const SORT_OPTIONS: SortOption[] = [
+  "prefecture",
+  "name",
+  "first_lit_date_asc",
+  "first_lit_date_desc",
+];
+
+export function SortSelect() {
+  const { isPending, params, updateSearchParams } = useSearchNavigation();
+  const rawValue = params.get("sort") as SortOption;
+  const value = SORT_OPTIONS.includes(rawValue) ? rawValue : "prefecture";
 
   function handleChange(nextValue: SortOption) {
-    const params = new URLSearchParams(searchParams.toString());
-    if (nextValue === "prefecture") params.delete("sort");
-    else params.set("sort", nextValue);
-    params.delete("page");
-
-    startTransition(() => {
-      const queryString = params.toString();
-      router.push(queryString ? `${pathname}?${queryString}` : pathname);
-    });
+    updateSearchParams({ sort: nextValue === "prefecture" ? null : nextValue });
   }
 
   return (
@@ -33,7 +26,6 @@ export function SortSelect({ value }: SortSelectProps) {
       <select
         id="sort"
         value={value}
-        disabled={isPending}
         onChange={(event) => handleChange(event.target.value as SortOption)}
       >
         <option value="prefecture">地域順</option>
