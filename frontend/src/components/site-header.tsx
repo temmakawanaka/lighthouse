@@ -14,12 +14,13 @@ export function SiteHeader() {
           </span>
           <span>
             <strong>灯台アプリ</strong>
-            <small>Lighthouse guide</small>
+            <small>日本の海辺をめぐる案内帖</small>
           </span>
         </Link>
         <nav aria-label="メインナビゲーション">
-          <Link className="header-link" href="/">
+          <Link className="header-link" href="/#search-heading">
             灯台を探す
+            <span aria-hidden="true">↓</span>
           </Link>
         </nav>
       </div>
