@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { JapanLighthouseMap } from "@/components/japan-lighthouse-map";
+import { NearestLighthouses } from "@/components/nearest-lighthouses";
 
 export const metadata: Metadata = {
   title: "地図から灯台を探す",
@@ -20,6 +21,7 @@ export default function MapPage() {
         </div>
       </header>
       <div className="shell map-page__content">
+        <NearestLighthouses />
         <JapanLighthouseMap />
         <p className="map-page__note">道路や周辺施設は、各灯台の詳細ページからGoogle Mapsで確認できます。</p>
         <Link className="button button--secondary" href="/">条件を指定して一覧から探す</Link>

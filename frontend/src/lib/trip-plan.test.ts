@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { catalog } from "@/lib/catalog";
-import { distanceKm, googleMapsRouteUrl, MAX_TRIP_STOPS, nearbyLighthouses, parseTripPlan } from "./trip-plan";
+import { distanceKm, googleMapsRouteUrl, MAX_TRIP_STOPS, nearbyLighthouses, parseSharedTrip, parseTripPlan, sharedTripQuery } from "./trip-plan";
 
 describe("trip plan", () => {
   const validSlugs = new Set(catalog.map(({ slug }) => slug));
@@ -24,6 +24,13 @@ describe("trip plan", () => {
     expect(url.searchParams.get("waypoints")).toBe(`${catalog[1].latitude},${catalog[1].longitude}`);
     expect(url.searchParams.get("destination")).toBe(`${catalog[2].latitude},${catalog[2].longitude}`);
     expect(googleMapsRouteUrl([catalog[0]])).toBeNull();
+  });
+
+  it("round-trips a shared trip without accepting unknown stops", () => {
+    const plan = { version: 1 as const, date: "2026-10-01", stops: ["omaesaki", "inubosaki"] };
+    expect(parseSharedTrip(`?${sharedTripQuery(plan)}`, validSlugs)).toEqual(plan);
+    expect(parseSharedTrip("?stops=unknown", validSlugs)).toBeNull();
+    expect(parseSharedTrip("?stops=omaesaki&date=bad", validSlugs)?.date).toBe("");
   });
 
   it("calculates plausible distances and nearest lighthouses", () => {

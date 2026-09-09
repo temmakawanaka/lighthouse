@@ -1,4 +1,4 @@
-const CACHE = "lighthouse-field-guide-v3";
+const CACHE = "lighthouse-field-guide-v4";
 const APP_SHELL = ["/", "/map/", "/trip/", "/my-lighthouses/", "/manifest.webmanifest", "/icon.svg", "/icon-192.png", "/icon-512.png"];
 
 self.addEventListener("install", (event) => {

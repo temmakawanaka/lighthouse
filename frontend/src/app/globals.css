@@ -966,6 +966,26 @@ button:disabled {
   margin-top: 64px;
 }
 
+.visit-records { display: grid; gap: 16px; }
+.visit-record { background: var(--white); border: 1px solid var(--line-dark); padding: clamp(18px, 3vw, 26px); }
+.visit-record__heading { align-items: start; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; margin-bottom: 18px; padding-bottom: 14px; }
+.visit-record__heading strong, .visit-record__heading span { display: block; }
+.visit-record__heading strong { font-family: var(--serif); font-size: 1.15rem; font-weight: 500; }
+.visit-record__heading span { color: var(--ink-600); font-size: .8125rem; margin-top: 4px; }
+.visit-record__fields { display: grid; gap: 16px; grid-template-columns: minmax(180px, .35fr) minmax(0, 1fr); }
+.visit-record__fields label { display: grid; font-size: .875rem; font-weight: 700; gap: 7px; }
+.visit-record__fields input, .visit-record__fields textarea { background: var(--paper-25); border: 1px solid var(--line-dark); border-radius: 0; font: inherit; line-height: 1.6; min-height: 44px; padding: 9px 11px; resize: vertical; }
+.data-transfer { background: var(--paper-25); border: 1px solid var(--line-dark); margin-top: 64px; padding: clamp(20px, 4vw, 32px); }
+.data-transfer h2 { font-family: var(--serif); font-size: 1.35rem; font-weight: 500; margin: 0; }
+.data-transfer > p { color: var(--ink-700); margin: 12px 0 18px; }
+.data-transfer__actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.data-transfer__actions label { cursor: pointer; }
+.data-transfer__actions input { height: 1px; opacity: 0; position: absolute; width: 1px; }
+.data-transfer__actions label:focus-within { outline: 3px solid var(--focus); outline-offset: 3px; }
+.data-transfer__message { color: var(--sea-700); font-weight: 700; margin: 14px 0 0; }
+.data-transfer__message--error { color: #8a2d1f; }
+.data-transfer > small { color: var(--ink-600); display: block; font-size: .75rem; margin-top: 14px; }
+
 .my-lighthouses__loading,
 .local-storage-note {
   color: var(--ink-600);
@@ -975,6 +995,21 @@ button:disabled {
 .map-page__content {
   padding-block: 46px 12px;
 }
+
+.nearest-search { background: var(--ink-950); color: var(--white); margin-bottom: 36px; padding: clamp(22px, 4vw, 34px); }
+.nearest-search__intro { align-items: center; display: flex; gap: 28px; justify-content: space-between; }
+.nearest-search .kicker { color: var(--amber-300); margin: 0 0 5px; }
+.nearest-search h2 { font-family: var(--serif); font-size: 1.4rem; font-weight: 500; margin: 0; }
+.nearest-search__intro p:last-child { color: #d7dee2; font-size: .875rem; margin: 7px 0 0; }
+.nearest-search__message { border-top: 1px solid #53626a; color: #e8edf0; margin: 20px 0 0; padding-top: 14px; }
+.nearest-search__message--error { color: #ffd6c9; }
+.nearest-list { list-style: none; margin: 24px 0 0; padding: 0; }
+.nearest-list li { align-items: center; border-top: 1px solid #53626a; display: grid; gap: 14px; grid-template-columns: 34px minmax(0, 1fr) auto auto; min-height: 68px; padding-block: 8px; }
+.nearest-list__rank { color: var(--amber-300); font-family: var(--serif); }
+.nearest-list strong, .nearest-list li div span, .nearest-list__distance small { display: block; }
+.nearest-list li div span, .nearest-list__distance small { color: #cbd4d9; font-size: .75rem; }
+.nearest-list__distance { font-weight: 700; text-align: right; }
+.nearest-list .text-link { color: var(--white); }
 
 .map-layout {
   align-items: start;
@@ -2059,6 +2094,10 @@ button:disabled {
 .trip-summary strong { color: var(--signal-700); font-family: var(--serif); font-size: 1.35rem; }
 .trip-summary small, .trip-route-hint, .trip-storage-note { color: var(--ink-600); font-size: .8125rem; line-height: 1.7; }
 .trip-route-hint { margin: 12px 0 0; text-align: center; }
+.trip-share { margin-top: 10px; }
+.shared-trip-notice { background: var(--sea-100); border-left: 3px solid var(--sea-700); margin: 0 0 18px; padding: 12px 14px; }
+.shared-trip-notice p { font-size: .8125rem; line-height: 1.6; margin: 0 0 8px; }
+.shared-trip-notice button { background: transparent; color: var(--sea-700); font-size: .8125rem; font-weight: 700; min-height: 36px; padding: 0; text-decoration: underline; text-underline-offset: 3px; }
 .trip-limit { background: var(--amber-100); border-left: 3px solid var(--amber-700); font-size: .875rem; margin: 0 0 14px; padding: 10px 12px; }
 .trip-candidate-list { display: grid; gap: 10px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .trip-candidate-list li { align-items: center; background: var(--white); border: 1px solid var(--line-dark); display: grid; gap: 11px; grid-template-columns: 76px minmax(0, 1fr) auto; min-height: 88px; padding: 7px; }
@@ -2096,4 +2135,9 @@ button:disabled {
   .trip-stop-list li { grid-template-columns: 28px minmax(0, 1fr); }
   .trip-stop__moves { grid-column: 2; }
   .trip-back-links { align-items: stretch; flex-direction: column; }
+  .visit-record__heading, .nearest-search__intro { align-items: stretch; flex-direction: column; }
+  .visit-record__fields { grid-template-columns: 1fr; }
+  .nearest-list li { grid-template-columns: 28px minmax(0, 1fr) auto; }
+  .nearest-list .text-link { grid-column: 2 / -1; justify-self: start; }
+  .data-transfer__actions { flex-direction: column; }
 }
