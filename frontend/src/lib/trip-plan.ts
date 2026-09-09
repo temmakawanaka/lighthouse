@@ -25,6 +25,21 @@ export function parseTripPlan(value: string | null, validSlugs: ReadonlySet<stri
   }
 }
 
+export function parseSharedTrip(search: string, validSlugs: ReadonlySet<string>): TripPlan | null {
+  const params = new URLSearchParams(search);
+  if (!params.has("stops")) return null;
+  const stops = [...new Set((params.get("stops") ?? "").split(",").filter((slug) => validSlugs.has(slug)))].slice(0, MAX_TRIP_STOPS);
+  if (!stops.length) return null;
+  const date = /^\d{4}-\d{2}-\d{2}$/.test(params.get("date") ?? "") ? params.get("date")! : "";
+  return { version: 1, date, stops };
+}
+
+export function sharedTripQuery(plan: TripPlan): string {
+  const params = new URLSearchParams({ stops: plan.stops.join(",") });
+  if (plan.date) params.set("date", plan.date);
+  return params.toString();
+}
+
 export function distanceKm(first: Pick<Lighthouse, "latitude" | "longitude">, second: Pick<Lighthouse, "latitude" | "longitude">): number {
   const toRadians = (degrees: number) => degrees * Math.PI / 180;
   const firstLatitude = toRadians(Number(first.latitude));

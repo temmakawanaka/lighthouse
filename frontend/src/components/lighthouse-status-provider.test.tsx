@@ -6,13 +6,13 @@ import { LighthouseStatusProvider, parseStoredStatus, STORAGE_KEY, useLighthouse
 
 describe("parseStoredStatus", () => {
   it("returns an empty state for invalid input", () => {
-    expect(parseStoredStatus("not-json")).toEqual({ version: 1, favorites: [], visited: [] });
-    expect(parseStoredStatus(JSON.stringify({ favorites: "bad", visited: [1] }))).toEqual({ version: 1, favorites: [], visited: [] });
+    expect(parseStoredStatus("not-json")).toEqual({ version: 2, favorites: [], visited: [], visits: {} });
+    expect(parseStoredStatus(JSON.stringify({ favorites: "bad", visited: [1] }))).toEqual({ version: 2, favorites: [], visited: [], visits: {} });
   });
 
   it("deduplicates and validates stored slugs", () => {
     expect(parseStoredStatus(JSON.stringify({ favorites: ["omaesaki", "omaesaki", 1], visited: ["inubosaki"] })))
-      .toEqual({ version: 1, favorites: ["omaesaki"], visited: ["inubosaki"] });
+      .toEqual({ version: 2, favorites: ["omaesaki"], visited: ["inubosaki"], visits: { inubosaki: { date: "", note: "" } } });
   });
 });
 
@@ -29,6 +29,9 @@ describe("LighthouseStatusProvider", () => {
     act(() => result.current.toggleVisited("omaesaki"));
     expect(result.current.visited).toEqual(["omaesaki"]);
     expect(JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "{}").visited).toEqual(["omaesaki"]);
+
+    act(() => result.current.updateVisit("omaesaki", { date: "2026-09-09", note: "海がきれいだった" }));
+    expect(result.current.visits.omaesaki).toEqual({ date: "2026-09-09", note: "海がきれいだった" });
 
     act(() => result.current.toggleFavorite("omaesaki"));
     expect(result.current.favorites).toEqual([]);

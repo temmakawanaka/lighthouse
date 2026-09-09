@@ -26,7 +26,7 @@ try {
     }
     for (const match of html.matchAll(/(?:src|href)="([^"]+)"/g)) {
       const url = new URL(match[1].replaceAll("&amp;", "&"), origin + path);
-      if (url.origin !== origin || !/\.(js|css|jpg|png|svg|woff2|ico)$/.test(url.pathname) || checkedAssets.has(url.pathname)) continue;
+      if (url.origin !== origin || !/\.(js|css|jpg|png|svg|webp|woff2|ico)$/.test(url.pathname) || checkedAssets.has(url.pathname)) continue;
       assert((await stat(resolve("out", `.${decodeURIComponent(url.pathname)}`))).size > 0, url.pathname);
       checkedAssets.add(url.pathname);
     }
