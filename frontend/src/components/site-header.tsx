@@ -26,6 +26,10 @@ export function SiteHeader() {
             地図
             <span aria-hidden="true">⌖</span>
           </Link>
+          <Link className="header-link" href="/trip/">
+            旅程
+            <span aria-hidden="true">↗</span>
+          </Link>
           <Link className="header-link" href="/my-lighthouses/">
             マイ灯台
             <span aria-hidden="true">☆</span>

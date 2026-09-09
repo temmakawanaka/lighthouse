@@ -4,6 +4,8 @@ import { MyLighthouses } from "@/components/my-lighthouses";
 export const metadata: Metadata = {
   title: "マイ灯台",
   description: "行きたい灯台と訪問済みの灯台を、この端末で記録できます。",
+  alternates: { canonical: "/my-lighthouses/" },
+  robots: { index: false, follow: true },
 };
 
 export default function MyLighthousesPage() {

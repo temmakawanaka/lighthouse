@@ -44,7 +44,7 @@ export function LighthouseCard({ lighthouse, sequence, returnHref = "/" }: Light
         <LighthouseStatusActions slug={lighthouse.slug} name={lighthouse.name} compact />
         <div className="lighthouse-card__footer">
           <span>{year ? `初点灯 ${year}` : "初点灯年 調査中"}</span>
-          <Link className="text-link" href={`/lighthouses/${lighthouse.slug}${returnHref === "/" ? "" : `?from=${encodeURIComponent(returnHref)}`}`}>
+          <Link className="text-link" aria-label={`${lighthouse.name}の記録を見る`} href={`/lighthouses/${lighthouse.slug}${returnHref === "/" ? "" : `?from=${encodeURIComponent(returnHref)}`}`}>
             灯台の記録を見る
             <span aria-hidden="true">→</span>
           </Link>

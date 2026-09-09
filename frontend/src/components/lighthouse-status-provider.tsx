@@ -13,6 +13,7 @@ type StatusListKey = "favorites" | "visited";
 
 interface LighthouseStatusContextValue extends StoredStatus {
   ready: boolean;
+  storageError: boolean;
   toggleFavorite: (slug: string) => void;
   toggleVisited: (slug: string) => void;
 }
@@ -21,6 +22,7 @@ const emptyStatus: StoredStatus = { version: 1, favorites: [], visited: [] };
 const LighthouseStatusContext = createContext<LighthouseStatusContextValue>({
   ...emptyStatus,
   ready: false,
+  storageError: false,
   toggleFavorite: () => undefined,
   toggleVisited: () => undefined,
 });
@@ -41,6 +43,7 @@ function parseStoredStatus(value: string | null): StoredStatus {
 export function LighthouseStatusProvider({ children }: { children: React.ReactNode }) {
   const [status, setStatus] = useState<StoredStatus>(emptyStatus);
   const [ready, setReady] = useState(false);
+  const [storageError, setStorageError] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -71,8 +74,9 @@ export function LighthouseStatusProvider({ children }: { children: React.ReactNo
       const next = { ...current, [key]: values };
       try {
         window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+        setStorageError(false);
       } catch {
-        // Keep the current-tab state usable when storage is unavailable or full.
+        setStorageError(true);
       }
       return next;
     });
@@ -81,11 +85,15 @@ export function LighthouseStatusProvider({ children }: { children: React.ReactNo
   const value = useMemo<LighthouseStatusContextValue>(() => ({
     ...status,
     ready,
+    storageError,
     toggleFavorite: (slug) => update("favorites", slug),
     toggleVisited: (slug) => update("visited", slug),
-  }), [ready, status, update]);
+  }), [ready, status, storageError, update]);
 
-  return <LighthouseStatusContext.Provider value={value}>{children}</LighthouseStatusContext.Provider>;
+  return <LighthouseStatusContext.Provider value={value}>
+    {children}
+    {storageError && <p className="storage-error" role="status">このブラウザに記録を保存できませんでした。空き容量やプライベートブラウズ設定をご確認ください。</p>}
+  </LighthouseStatusContext.Provider>;
 }
 
 export function useLighthouseStatus() {

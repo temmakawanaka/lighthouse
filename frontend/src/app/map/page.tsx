@@ -6,6 +6,7 @@ import { JapanLighthouseMap } from "@/components/japan-lighthouse-map";
 export const metadata: Metadata = {
   title: "地図から灯台を探す",
   description: "のぼれる灯台16を、日本地図と都道府県から探せます。",
+  alternates: { canonical: "/map/" },
 };
 
 export default function MapPage() {

@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import { getLighthouses } from "@/api/lighthouses";
@@ -10,6 +11,8 @@ import { PAGE_SIZE } from "@/lib/constants";
 import { buildPageHref, parseListQuery, type RawSearchParams } from "@/lib/query-params";
 
 type HomePageProps = { searchParams: Promise<RawSearchParams> };
+
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 export default async function HomePage({ searchParams }: HomePageProps) {
   // Server deployments may select their data source at runtime; exports are fully static.
