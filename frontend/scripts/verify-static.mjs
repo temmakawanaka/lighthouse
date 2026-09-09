@@ -31,6 +31,13 @@ try {
       checkedAssets.add(url.pathname);
     }
   }
+  for (const [path, expected] of [["/map/", "地図から灯台を探す"], ["/my-lighthouses/", "マイ灯台"]]) {
+    const response = await fetch(origin + path);
+    assert.equal(response.status, 200, path);
+    assert((await response.text()).includes(expected), path);
+  }
+  assert.equal((await fetch(origin + "/manifest.webmanifest")).status, 200);
+  assert.equal((await fetch(origin + "/sw.js")).status, 200);
   const missing = await fetch(origin + "/lighthouses/does-not-exist/");
   assert.equal(missing.status, 404);
   const missingHtml = await missing.text();

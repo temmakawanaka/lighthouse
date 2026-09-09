@@ -13,5 +13,6 @@ build/
 .idea/
 .vscode/
 postgres_data/
+artifacts/
 .openai/*.tmp
 /out/

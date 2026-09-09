@@ -19,8 +19,6 @@ on:
       - "scripts/**"
       - ".github/workflows/frontend-ci.yml"
       - "docs/**"
-  schedule:
-    - cron: "0 0 * * 1"
   workflow_dispatch:
 
 permissions:

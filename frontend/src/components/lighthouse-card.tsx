@@ -3,8 +3,8 @@ import Link from "next/link";
 import { formatLocation, formatYear } from "@/lib/format";
 import type { Lighthouse } from "@/types/lighthouse";
 
-import { LighthouseVisual } from "./lighthouse-visual";
 import { LighthousePhoto } from "./lighthouse-photo";
+import { LighthouseStatusActions } from "./lighthouse-status-actions";
 
 interface LighthouseCardProps {
   lighthouse: Lighthouse;
@@ -18,10 +18,7 @@ export function LighthouseCard({ lighthouse, sequence, returnHref = "/" }: Light
   return (
     <article className="lighthouse-card">
       <div className="lighthouse-card__visual">
-        {lighthouse.slug === "omaesaki" ? <LighthousePhoto compact /> : <LighthouseVisual
-          visualId={lighthouse.slug}
-          label={`${lighthouse.name}のイメージ図版`}
-        />}
+        <LighthousePhoto lighthouse={lighthouse} compact />
         {sequence && (
           <span className="lighthouse-card__number" aria-hidden="true">
             {String(sequence).padStart(2, "0")}
@@ -44,6 +41,7 @@ export function LighthouseCard({ lighthouse, sequence, returnHref = "/" }: Light
         <p className="card-description">
           {lighthouse.description ?? "灯台の詳しい情報を確認できます。"}
         </p>
+        <LighthouseStatusActions slug={lighthouse.slug} name={lighthouse.name} compact />
         <div className="lighthouse-card__footer">
           <span>{year ? `初点灯 ${year}` : "初点灯年 調査中"}</span>
           <Link className="text-link" href={`/lighthouses/${lighthouse.slug}${returnHref === "/" ? "" : `?from=${encodeURIComponent(returnHref)}`}`}>

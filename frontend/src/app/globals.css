@@ -190,6 +190,12 @@ button:disabled {
   color: var(--signal-700);
 }
 
+.header-nav {
+  align-items: center;
+  display: flex;
+  gap: 22px;
+}
+
 /* Footer */
 
 .site-footer {
@@ -894,6 +900,237 @@ button:disabled {
   text-decoration-color: currentColor;
 }
 
+.status-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.status-actions--compact {
+  margin: 0 0 12px;
+}
+
+.status-action {
+  align-items: center;
+  background: var(--paper-25);
+  border: 1px solid var(--line-dark);
+  border-radius: var(--radius-xs);
+  display: inline-flex;
+  font-size: 0.75rem;
+  font-weight: 700;
+  gap: 7px;
+  min-height: 42px;
+  padding: 7px 12px;
+}
+
+.status-action:hover,
+.status-action[aria-pressed="true"] {
+  background: var(--amber-100);
+  border-color: var(--amber-700);
+  color: #5b421c;
+}
+
+.status-action[aria-pressed="true"]:last-child {
+  background: var(--sea-100);
+  border-color: var(--sea-700);
+  color: var(--ink-950);
+}
+
+.subpage-heading {
+  background: var(--paper-25);
+  border-bottom: 1px solid var(--line-dark);
+  padding-block: 48px 42px;
+}
+
+.subpage-heading h1 {
+  color: var(--ink-950);
+  font-family: var(--serif);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 500;
+  line-height: 1.35;
+  margin: 0;
+}
+
+.subpage-heading p:last-child {
+  color: var(--ink-700);
+  font-size: 1rem;
+  margin: 10px 0 0;
+}
+
+.my-lighthouses__content {
+  padding-block: 48px 12px;
+}
+
+.my-lighthouses__section + .my-lighthouses__section {
+  margin-top: 64px;
+}
+
+.my-lighthouses__loading,
+.local-storage-note {
+  color: var(--ink-600);
+  font-size: 0.875rem;
+}
+
+.map-page__content {
+  padding-block: 46px 12px;
+}
+
+.map-layout {
+  align-items: start;
+  display: grid;
+  gap: clamp(30px, 5vw, 70px);
+  grid-template-columns: minmax(300px, 0.9fr) minmax(0, 1.1fr);
+}
+
+.japan-map {
+  background: var(--paper-25);
+  border: 1px solid var(--line-dark);
+  margin: 0;
+  padding: 24px;
+  position: sticky;
+  top: 92px;
+}
+
+.japan-map svg {
+  display: block;
+  height: min(66vh, 620px);
+  margin: auto;
+  max-width: 100%;
+}
+
+.japan-map__prefecture {
+  fill: var(--sea-100);
+  stroke: var(--paper-25);
+  stroke-width: 0.8;
+}
+
+.japan-map__link path {
+  fill: var(--signal-600);
+  stroke: var(--paper-25);
+  stroke-width: 1;
+  transition: fill 140ms ease;
+}
+
+.japan-map__link:hover path,
+.japan-map__link:focus path {
+  fill: var(--ink-950);
+}
+
+.japan-map__link:focus-visible {
+  outline: none;
+}
+
+.japan-map__link:focus-visible path {
+  filter: drop-shadow(0 0 4px var(--focus));
+  stroke: var(--focus);
+  stroke-width: 3;
+}
+
+.japan-map figcaption {
+  border-top: 1px solid var(--line);
+  color: var(--ink-600);
+  font-size: 0.75rem;
+  margin-top: 16px;
+  padding-top: 12px;
+}
+
+.japan-map figcaption a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.map-index {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.map-index__group {
+  background: var(--white);
+  border-top: 2px solid var(--ink-900);
+  padding: 17px 18px;
+}
+
+.map-index__group h2 {
+  border-bottom: 1px solid var(--line);
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 0 0 8px;
+  padding-bottom: 9px;
+}
+
+.map-index__group h2 a {
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 4px;
+}
+
+.map-index__group h2 a:hover {
+  color: var(--signal-700);
+  text-decoration-color: currentColor;
+}
+
+.map-index__group h2 span {
+  color: var(--signal-700);
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  margin-left: 5px;
+}
+
+.map-index__group ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.map-index__group li + li {
+  border-top: 1px solid var(--line);
+}
+
+.map-index__group li a {
+  display: block;
+  min-height: 48px;
+  padding: 8px 2px;
+}
+
+.map-index__group strong,
+.map-index__group li span {
+  display: block;
+}
+
+.map-index__group strong {
+  font-size: 0.875rem;
+}
+
+.map-index__group li span {
+  color: var(--ink-600);
+  font-size: 0.75rem;
+}
+
+.map-page__note {
+  color: var(--ink-700);
+  font-size: 0.875rem;
+  margin: 32px 0 14px;
+}
+
+.status-panel--compact {
+  margin: 0;
+  max-width: none;
+  padding-block: 38px;
+}
+
+.status-panel--compact p {
+  margin: 0 0 18px;
+}
+
+.local-storage-note {
+  border-top: 1px solid var(--line);
+  margin: 54px 0 0;
+  padding-top: 18px;
+}
+
 .pagination {
   align-items: center;
   display: flex;
@@ -1437,6 +1674,14 @@ button:disabled {
 }
 
 @media (max-width: 840px) {
+  .map-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .japan-map {
+    position: static;
+  }
+
   .hero__inner {
     gap: 50px;
     grid-template-columns: 1fr;
@@ -1502,6 +1747,12 @@ button:disabled {
 }
 
 @media (max-width: 640px) {
+  .header-nav { gap: 10px; }
+  .header-link { font-size: 0.72rem; gap: 6px; }
+  .brand small { display: none; }
+  .status-actions { flex-direction: column; }
+  .status-action { justify-content: center; width: 100%; }
+  .map-index { grid-template-columns: 1fr; }
   .shell {
     padding-inline: 17px;
   }
@@ -1768,12 +2019,12 @@ button:disabled {
 .lighthouse-card__body, .card-description, .detail-hero__description, .detail-list dd, .side-card address { font-size: 1rem; }
 .field label, .check-field, .button, .text-link, .header-link, .back-link, .pagination, .detail-list dt, .source-list, .sort-control { font-size: .875rem; }
 .badge, .location-label, .english-name, .lighthouse-card__footer, .side-card__description, .coordinate-list, .source-notes { font-size: .8125rem; }
-.lighthouse-photo { margin: 0; width: 100%; height: 100%; background: var(--paper-25); }
-.lighthouse-photo img { display: block; width: 100%; height: auto; }
+.lighthouse-photo { margin: 0; width: 100%; height: 100%; background: var(--paper-25); display: flex; flex-direction: column; }
+.lighthouse-photo img { display: block; width: 100%; flex: 1; min-height: 0; object-fit: cover; }
 .lighthouse-photo figcaption { padding: .6rem .8rem; font-size: .75rem; line-height: 1.5; color: var(--ink-800); }
 .lighthouse-photo a { text-decoration: underline; text-underline-offset: .2em; }
-.lighthouse-photo--compact img { width: 100%; height: auto; }
-.lighthouse-photo--compact figcaption { padding-left: 3.5rem; }
+.lighthouse-photo--compact { aspect-ratio: 16 / 9; }
+.lighthouse-photo--compact img { width: 100%; height: 100%; object-fit: cover; }
 .visit-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.5rem; }
 .visit-actions .button { min-height: 44px; }
 .visit-check { border-left: 3px solid var(--sea-700); padding: 1rem 1.25rem; background: var(--sea-50); margin-bottom: 1.5rem; }

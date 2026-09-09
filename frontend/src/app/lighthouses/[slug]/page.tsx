@@ -5,8 +5,8 @@ import { catalog } from "@/lib/catalog";
 
 import { BackToListLink } from "@/components/back-to-list-link";
 import { DetailSection, hasVisibleDetailValue } from "@/components/detail-section";
-import { LighthouseVisual } from "@/components/lighthouse-visual";
 import { LighthousePhoto } from "@/components/lighthouse-photo";
+import { LighthouseStatusActions } from "@/components/lighthouse-status-actions";
 import { officialVisitUrl, directionsUrl } from "@/lib/visit-links";
 import {
   formatDate,
@@ -102,13 +102,7 @@ export default async function LighthouseDetailPage({ params }: LighthouseDetailP
         <article>
           <header className="detail-hero">
             <div className="detail-hero__visual">
-              {lighthouse.slug === "omaesaki" ? <LighthousePhoto /> : <><LighthouseVisual
-                visualId={lighthouse.slug}
-                size="detail"
-                label={`${lighthouse.name}のイメージ図版`}
-              />
-              <span className="image-note">ILLUSTRATION / 図版</span>
-              </>}
+              <LighthousePhoto lighthouse={lighthouse} />
             </div>
             <div className="detail-hero__content">
               <p className="detail-hero__record">LIGHTHOUSE RECORD</p>
@@ -153,6 +147,7 @@ export default async function LighthouseDetailPage({ params }: LighthouseDetailP
                 {officialUrl && <a className="button button--primary" href={officialUrl} target="_blank" rel="noreferrer">公式の参観案内 <span aria-hidden="true">↗</span><span className="sr-only">（新しいタブで開きます）</span></a>}
                 <a className="button button--secondary" href={directionsUrl(lighthouse)} target="_blank" rel="noreferrer">ここへの経路を調べる <span aria-hidden="true">↗</span><span className="sr-only">（新しいタブで開きます）</span></a>
               </div>
+              <LighthouseStatusActions slug={lighthouse.slug} name={lighthouse.name} />
             </div>
           </header>
 
