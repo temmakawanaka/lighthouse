@@ -1,4 +1,6 @@
 import { PAGE_SIZE } from "@/lib/constants";
+import { usesCatalog } from "@/lib/data-source";
+import { getCatalogLighthouse, searchCatalog } from "@/lib/catalog";
 import type { ListQuery } from "@/lib/query-params";
 import { toApiSort } from "@/lib/query-params";
 import type { Lighthouse, LighthouseListResponse } from "@/types/lighthouse";
@@ -26,6 +28,7 @@ function apiBaseUrl(): string {
 async function request<T>(path: string): Promise<T> {
   const response = await fetch(`${apiBaseUrl()}${path}`, {
     cache: "no-store",
+    signal: AbortSignal.timeout(8_000),
     headers: { Accept: "application/json" },
   });
 
@@ -36,7 +39,8 @@ async function request<T>(path: string): Promise<T> {
   return (await response.json()) as T;
 }
 
-export function getLighthouses(query: ListQuery): Promise<LighthouseListResponse> {
+export async function getLighthouses(query: ListQuery): Promise<LighthouseListResponse> {
+  if (usesCatalog()) return searchCatalog(query);
   const params = new URLSearchParams({
     limit: String(PAGE_SIZE),
     offset: String((query.page - 1) * PAGE_SIZE),
@@ -53,6 +57,11 @@ export function getLighthouses(query: ListQuery): Promise<LighthouseListResponse
   return request<LighthouseListResponse>(`/api/v1/lighthouses?${params.toString()}`);
 }
 
-export function getLighthouseBySlug(slug: string): Promise<Lighthouse> {
+export async function getLighthouseBySlug(slug: string): Promise<Lighthouse> {
+  if (usesCatalog()) {
+    const record = getCatalogLighthouse(slug);
+    if (!record) throw new LighthouseApiError("灯台が見つかりませんでした。", 404);
+    return record;
+  }
   return request<Lighthouse>(`/api/v1/lighthouses/slug/${encodeURIComponent(slug)}`);
 }

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 
 import { SiteHeader } from "@/components/site-header";
+import { LighthouseStatusProvider } from "@/components/lighthouse-status-provider";
+import { ServiceWorkerRegister } from "@/components/service-worker-register";
 
 import "./globals.css";
 
@@ -10,6 +12,8 @@ export const metadata: Metadata = {
     template: "%s｜灯台アプリ",
   },
   description: "日本各地の参観できる灯台を、地域や名前から探せる灯台ガイドです。",
+  manifest: "/manifest.webmanifest",
+  icons: { icon: "/icon.svg" },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -19,12 +23,24 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <a className="skip-link" href="#main-content">
           本文へ移動
         </a>
-        <SiteHeader />
-        {children}
+        <LighthouseStatusProvider>
+          <SiteHeader />
+          {children}
+        </LighthouseStatusProvider>
+        <ServiceWorkerRegister />
         <footer className="site-footer">
-          <div className="shell">
-            <p>灯台を知り、海辺への旅をもっと楽しむためのガイド。</p>
-            <small>参観前には、必ず公式サイトで最新情報をご確認ください。</small>
+          <div className="shell site-footer__inner">
+            <div className="site-footer__brand">
+              <span aria-hidden="true">灯</span>
+              <p>
+                <strong>灯台アプリ</strong>
+                <small>LIGHTHOUSE FIELD GUIDE</small>
+              </p>
+            </div>
+            <div className="site-footer__note">
+              <p>灯台を知り、海辺への旅をもっと楽しむためのガイド。</p>
+              <small>参観前には、必ず公式サイトで最新情報をご確認ください。</small>
+            </div>
           </div>
         </footer>
       </body>

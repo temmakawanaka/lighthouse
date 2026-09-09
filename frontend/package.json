@@ -3,18 +3,28 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "sync:catalog": "node scripts/sync-catalog.mjs",
+    "sync:photos": "node scripts/sync-photos.mjs",
+    "check:catalog": "node scripts/sync-catalog.mjs --check",
+    "check:official": "node ../scripts/official-visits/check.mjs",
+    "build:static": "npm run check:catalog && node scripts/build-static.mjs",
+    "verify:static": "node scripts/verify-static.mjs",
+    "preview:static": "node scripts/serve-static.mjs",
+    "test:static": "npm run build:static && npm run verify:static",
+    "test:e2e:static": "playwright test --config playwright.static.config.ts",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:http-status": "npm run build && node scripts/test-http-status.mjs",
+    "test:http-status": "node scripts/test-http-status.mjs",
     "test:e2e": "playwright test",
     "audit:production": "npm audit --omit=dev --audit-level=moderate"
   },
   "dependencies": {
-    "next": "16.3.0",
+    "@svg-maps/japan": "2.0.0",
+    "next": "16.3.4",
     "react": "19.2.7",
     "react-dom": "19.2.7"
   },
@@ -26,10 +36,10 @@
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
     "eslint": "9.39.5",
-    "eslint-config-next": "16.3.0",
+    "eslint-config-next": "16.3.4",
     "jsdom": "29.1.1",
     "typescript": "5.9.3",
-    "vitest": "4.1.10"
+    "vitest": "4.1.11"
   },
   "engines": {
     "node": ">=20.9.0"

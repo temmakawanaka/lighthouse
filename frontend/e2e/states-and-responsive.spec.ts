@@ -15,7 +15,7 @@ test("代表的な画面幅で主要要素が表示され、横スクロール�
   await page.goto("/");
 
   await expect(
-    page.getByRole("heading", { name: /海の道しるべを、\s*次の旅の目的地に。/ }),
+    page.getByRole("heading", { name: "のぼれる灯台を探す", level: 1 }),
   ).toBeVisible();
   await expect(page.getByLabel("キーワード")).toBeVisible();
   await expect(page.getByLabel("都道府県")).toBeVisible();
@@ -42,12 +42,15 @@ test("代表的な画面幅で主要要素が表示され、横スクロール�
 
 test("カードから正常な詳細画面へ移動できる", async ({ page }) => {
   await page.goto("/?q=犬吠");
-  await page.getByRole("link", { name: /詳細を見る/ }).click();
+  await page.getByRole("link", { name: /灯台の記録を見る/ }).click();
 
-  await expect(page).toHaveURL(/\/lighthouses\/inubosaki$/);
+  await expect(page).toHaveURL(/\/lighthouses\/inubosaki\?from=/);
   await expect(page.getByRole("heading", { name: "犬吠埼灯台", level: 1 })).toBeVisible();
   await expect(page.getByRole("link", { name: /Google Mapsで開く/ })).toBeVisible();
   await expectNoHorizontalScroll(page);
+  await page.getByRole("link", { name: "一覧へ戻る" }).click();
+  await expect(page).toHaveURL(/\?q=/);
+  await expect(page.getByLabel("キーワード")).toHaveValue("犬吠");
 });
 
 test("0件、APIエラー、詳細404を利用者向けに表示する", async ({ page }) => {

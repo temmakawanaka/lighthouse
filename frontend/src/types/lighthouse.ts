@@ -48,6 +48,8 @@ export interface Lighthouse {
   is_active: boolean;
   created_at: string;
   updated_at: string;
+  visit_checked_at?: string;
+  visit_notice?: string | null;
 }
 
 export interface LighthouseListResponse {

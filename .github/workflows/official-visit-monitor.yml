@@ -1,0 +1,64 @@
+name: Official visit information monitor
+
+on:
+  schedule:
+    - cron: "17 21 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: official-visit-monitor
+  cancel-in-progress: true
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Compare official pages with baseline
+        id: monitor
+        shell: bash
+        run: |
+          set +e
+          node scripts/official-visits/check.mjs
+          status=$?
+          echo "exit_code=$status" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: official-visit-report
+          path: artifacts/official-visits/
+          retention-days: 30
+
+      - name: Create or update review issue
+        if: steps.monitor.outputs.exit_code != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          title='[自動検知] 公式参観情報に変更候補があります'
+          number=$(gh issue list --state open --search "$title in:title" --json number --jq '.[0].number // empty')
+          if [ -n "$number" ]; then
+            gh issue comment "$number" --body-file artifacts/official-visits/report.md
+          else
+            gh issue create --title "$title" --body-file artifacts/official-visits/report.md
+          fi
+
+      - name: Fail when review is required
+        if: steps.monitor.outputs.exit_code != '0'
+        shell: bash
+        run: exit "${{ steps.monitor.outputs.exit_code }}"

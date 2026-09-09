@@ -1,4 +1,7 @@
 .next/
+out/
+playwright-report/
+test-results/
 node_modules/
 coverage/
 .env*.local

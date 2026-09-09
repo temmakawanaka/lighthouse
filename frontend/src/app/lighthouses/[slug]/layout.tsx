@@ -1,4 +1,5 @@
 import { loadLighthouse } from "./load-lighthouse";
+import { connection } from "next/server";
 
 type LighthouseDetailLayoutProps = Readonly<{
   children: React.ReactNode;
@@ -9,6 +10,7 @@ export default async function LighthouseDetailLayout({
   children,
   params,
 }: LighthouseDetailLayoutProps) {
+  if (process.env.LIGHTHOUSE_STATIC_EXPORT !== "true") await connection();
   const { slug } = await params;
 
   // Resolve a missing lighthouse before the segment's loading boundary starts

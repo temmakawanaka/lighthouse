@@ -8,6 +8,7 @@
 - `npm run lint`
 - `npm run typecheck`
 - `npm test`
+- `npm run test:static`
 - `npm run build`
 - `npm run audit:production`
 
@@ -22,7 +23,7 @@
 
 ## Next.js・PostCSS・sharpの対応
 
-2026年7月に公開されたNext.js、PostCSS、sharpのAdvisoryに対応するため、Next.jsを16.3.0へ更新しています。このバージョンは、修正版のPostCSS 8.5.23とsharp 0.35.3を依存関係として採用しています。
+2026年に公開されたNext.jsと開発ツール群のAdvisoryに対応するため、Next.jsを16.3.4、Vitestを4.1.11へ更新しています。推移依存関係もlockfile上で修正版へ更新し、2026-09-09時点の `npm audit` は本番・開発依存とも0件です。
 
 フレームワークが修正版を直接指定しているため、PostCSSやsharpの個別overrideは使用しません。依存関係の更新時は次を確認します。
 
@@ -34,6 +35,7 @@ npm run audit:production
 npm run lint
 npm run typecheck
 npm test
+npm run test:static
 npm run build
 ```
 

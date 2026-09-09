@@ -1,0 +1,82 @@
+{
+  "shiriyazaki": {
+    "checked_at": "2026-09-09",
+    "source_url": "https://www.tokokai.org/tourlight/tourlight16/",
+    "notice": "2026年9月14日・28日は終日参観休止の案内があります。"
+  },
+  "nyudosaki": {
+    "checked_at": "2026-09-09",
+    "source_url": "https://www.tokokai.org/tourlight/tourlight01/",
+    "notice": null
+  },
+  "shioyasaki": {
+    "checked_at": "2026-09-09",
+    "source_url": "https://www.tokokai.org/tourlight/tourlight02/",
+    "notice": null
+  },
+  "inubosaki": {
+    "checked_at": "2026-09-09",
+    "source_url": "https://www.tokokai.org/tourlight/tourlight03/",
+    "notice": null
+  },
+  "nojimasaki": {
+    "checked_at": "2026-09-09",
+    "source_url": "https://www.tokokai.org/tourlight/tourlight04/",
+    "notice": null
+  },
+  "kannonzaki": {
+    "checked_at": "2026-09-09",
+    "source_url": "https://www.tokokai.org/tourlight/tourlight05/",
+    "notice": null
+  },
+  "hatsushima": {
+    "checked_at": "2026-09-09",
+    "source_url": "https://www.tokokai.org/tourlight/tourlight06/",
+    "notice": null
+  },
+  "omaesaki": {
+    "checked_at": "2026-09-09",
+    "source_url": "https://www.tokokai.org/tourlight/tourlight07/",
+    "notice": "2026年9月8日発表：電源設備の復旧により参観再開の案内があります。"
+  },
+  "anorisaki": {
+    "checked_at": "2026-09-09",
+    "source_url": "https://www.tokokai.org/tourlight/tourlight08/",
+    "notice": null
+  },
+  "daiosaki": {
+    "checked_at": "2026-09-09",
+    "source_url": "https://www.tokokai.org/tourlight/tourlight09/",
+    "notice": null
+  },
+  "shionomisaki": {
+    "checked_at": "2026-09-09",
+    "source_url": "https://www.tokokai.org/tourlight/tourlight10/",
+    "notice": null
+  },
+  "tsunoshima": {
+    "checked_at": "2026-09-09",
+    "source_url": "https://www.tokokai.org/tourlight/tourlight11/",
+    "notice": null
+  },
+  "izumo-hinomisaki": {
+    "checked_at": "2026-09-09",
+    "source_url": "https://www.tokokai.org/tourlight/tourlight12/",
+    "notice": null
+  },
+  "toimisaki": {
+    "checked_at": "2026-09-09",
+    "source_url": "https://www.tokokai.org/tourlight/tourlight13/",
+    "notice": "2026年9月13日は自転車競技大会の通行規制に伴い14:00まで参観休止の案内があります。"
+  },
+  "zanpamisaki": {
+    "checked_at": "2026-09-09",
+    "source_url": "https://www.tokokai.org/tourlight/tourlight14/",
+    "notice": null
+  },
+  "hennasaki": {
+    "checked_at": "2026-09-09",
+    "source_url": "https://www.tokokai.org/tourlight/tourlight15/",
+    "notice": null
+  }
+}

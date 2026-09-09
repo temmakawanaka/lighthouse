@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { connection } from "next/server";
+import { catalog } from "@/lib/catalog";
 
 import { BackToListLink } from "@/components/back-to-list-link";
 import { DetailSection, hasVisibleDetailValue } from "@/components/detail-section";
-import { LighthouseVisual } from "@/components/lighthouse-visual";
+import { LighthousePhoto } from "@/components/lighthouse-photo";
+import { LighthouseStatusActions } from "@/components/lighthouse-status-actions";
+import { officialVisitUrl, directionsUrl } from "@/lib/visit-links";
 import {
   formatDate,
   formatLocation,
@@ -13,13 +17,22 @@ import {
 
 import { loadLighthouse } from "./load-lighthouse";
 
-export const dynamic = "force-dynamic";
+export function generateStaticParams() {
+  return process.env.LIGHTHOUSE_STATIC_EXPORT === "true" ? catalog.map(({ slug }) => ({ slug })) : [];
+}
 
 interface LighthouseDetailPageProps {
   params: Promise<{ slug: string }>;
 }
 
+// The server build resolves API-backed slugs per request. The static build script
+// temporarily switches this literal to force-static so Next.js can export all 16 paths.
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({ params }: LighthouseDetailPageProps): Promise<Metadata> {
+  // Metadata is rendered independently from the layout. Mark API-backed requests
+  // as dynamic here as well, while keeping the export build fully static.
+  if (process.env.LIGHTHOUSE_STATIC_EXPORT !== "true") await connection();
   const { slug } = await params;
   const lighthouse = await loadLighthouse(slug);
 
@@ -30,9 +43,11 @@ export async function generateMetadata({ params }: LighthouseDetailPageProps): P
 }
 
 export default async function LighthouseDetailPage({ params }: LighthouseDetailPageProps) {
+  if (process.env.LIGHTHOUSE_STATIC_EXPORT !== "true") await connection();
   const { slug } = await params;
   const lighthouse = await loadLighthouse(slug);
   const location = formatLocation(lighthouse.prefecture, lighthouse.municipality);
+  const officialUrl = officialVisitUrl(lighthouse.source_urls);
   const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
     `${lighthouse.latitude},${lighthouse.longitude}`,
   )}`;
@@ -87,14 +102,10 @@ export default async function LighthouseDetailPage({ params }: LighthouseDetailP
         <article>
           <header className="detail-hero">
             <div className="detail-hero__visual">
-              <LighthouseVisual
-                visualId={lighthouse.slug}
-                size="detail"
-                label={`${lighthouse.name}のイメージイラスト`}
-              />
-              <span className="image-note">写真は準備中です</span>
+              <LighthousePhoto lighthouse={lighthouse} />
             </div>
             <div className="detail-hero__content">
+              <p className="detail-hero__record">LIGHTHOUSE RECORD</p>
               <p className="location-label location-label--large">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M12 21s7-6.1 7-12a7 7 0 1 0-14 0c0 5.9 7 12 7 12Z" />
@@ -122,11 +133,32 @@ export default async function LighthouseDetailPage({ params }: LighthouseDetailP
               <p className="detail-hero__description">
                 {lighthouse.description ?? "この灯台の詳しい紹介は準備中です。"}
               </p>
+              <dl className="detail-highlight-list">
+                <div>
+                  <dt>初点灯</dt>
+                  <dd>{formatDate(lighthouse.first_lit_date) ?? "調査中"}</dd>
+                </div>
+                <div>
+                  <dt>塔高</dt>
+                  <dd>{formatNumber(lighthouse.tower_height_m, "m") ?? "調査中"}</dd>
+                </div>
+              </dl>
+              <div className="visit-actions">
+                {officialUrl && <a className="button button--primary" href={officialUrl} target="_blank" rel="noreferrer">公式の参観案内 <span aria-hidden="true">↗</span><span className="sr-only">（新しいタブで開きます）</span></a>}
+                <a className="button button--secondary" href={directionsUrl(lighthouse)} target="_blank" rel="noreferrer">ここへの経路を調べる <span aria-hidden="true">↗</span><span className="sr-only">（新しいタブで開きます）</span></a>
+              </div>
+              <LighthouseStatusActions slug={lighthouse.slug} name={lighthouse.name} />
             </div>
           </header>
 
           <div className="detail-layout">
             <div className="detail-layout__main">
+              <section className="visit-check" aria-label="参観前の確認">
+                <p><strong>お出かけ前に</strong>　天候や工事による休止は、公式の参観案内でご確認ください。</p>
+                {lighthouse.visit_checked_at && <p className="visit-check__date">参観情報の確認日：<time dateTime={lighthouse.visit_checked_at}>{formatDate(lighthouse.visit_checked_at)}</time></p>}
+                {lighthouse.visit_notice && <p className="visit-check__notice">{lighthouse.visit_notice}</p>}
+                {lighthouse.visit_info?.includes("土日等") && <p>「土日等」は土・日・祝休日、GW、8月10〜19日、12月29日〜1月3日を含みます。</p>}
+              </section>
               <DetailSection title="歴史・基本情報" eyebrow="HISTORY" items={basicItems} />
               <DetailSection
                 title="灯台の諸元"
@@ -194,6 +226,7 @@ export default async function LighthouseDetailPage({ params }: LighthouseDetailP
                       </li>
                     ))}
                   </ul>
+                  {lighthouse.source_notes && <p className="source-notes">{lighthouse.source_notes}</p>}
                 </section>
               )}
             </aside>
