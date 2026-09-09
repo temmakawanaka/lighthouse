@@ -7,6 +7,7 @@ import { BackToListLink } from "@/components/back-to-list-link";
 import { DetailSection, hasVisibleDetailValue } from "@/components/detail-section";
 import { LighthousePhoto } from "@/components/lighthouse-photo";
 import { LighthouseStatusActions } from "@/components/lighthouse-status-actions";
+import { NearbyLighthouses } from "@/components/nearby-lighthouses";
 import { officialVisitUrl, directionsUrl } from "@/lib/visit-links";
 import {
   formatDate,
@@ -39,6 +40,7 @@ export async function generateMetadata({ params }: LighthouseDetailPageProps): P
   return {
     title: lighthouse.name,
     description: lighthouse.description ?? `${lighthouse.name}の所在地・歴史・参観情報。`,
+    alternates: { canonical: `/lighthouses/${lighthouse.slug}/` },
   };
 }
 
@@ -207,6 +209,8 @@ export default async function LighthouseDetailPage({ params }: LighthouseDetailP
                   <span className="sr-only">（新しいタブで開きます）</span>
                 </a>
               </section>
+
+              <NearbyLighthouses current={lighthouse} />
 
               {lighthouse.source_urls.length > 0 && (
                 <section className="side-card side-card--muted">
