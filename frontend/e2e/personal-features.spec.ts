@@ -13,6 +13,7 @@ test("現在地から近い灯台を端末内で探せる", async ({ context, pa
 test("訪問日とメモを保存し、バックアップを書き出せる", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "訪問記録" }).first().click();
+  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("lighthouse-field-guide:user-state:v1") ?? "{}").visited?.length ?? 0)).toBe(1);
   await page.goto("/my-lighthouses/");
   await page.getByLabel("訪問日").fill("2026-09-09");
   await page.getByLabel("メモ").fill("岬からの海がきれいだった");
