@@ -33,7 +33,8 @@ function firstValue(value: string | string[] | undefined): string {
 }
 
 export function parseListQuery(searchParams: RawSearchParams): ListQuery {
-  const rawPage = Number.parseInt(firstValue(searchParams.page), 10);
+  const pageValue = firstValue(searchParams.page);
+  const rawPage = /^\d+$/.test(pageValue) ? Number(pageValue) : NaN;
   const rawSort = firstValue(searchParams.sort) as SortOption;
 
   return {
@@ -41,8 +42,16 @@ export function parseListQuery(searchParams: RawSearchParams): ListQuery {
     prefecture: firstValue(searchParams.prefecture).trim().slice(0, 40),
     visitable: firstValue(searchParams.visitable) === "true",
     sort: SORT_OPTIONS.includes(rawSort) ? rawSort : "prefecture",
-    page: Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1,
+    page: Number.isSafeInteger(rawPage) && rawPage > 0 ? rawPage : 1,
   };
+}
+
+export function safeReturnHref(value: string | null): string {
+  if (!value || !value.startsWith("/?") || value.length > 2000) return "/";
+  const params = new URLSearchParams(value.slice(2));
+  const raw = Object.fromEntries([...params.keys()].map((key) => [key, params.getAll(key)]));
+  const query = parseListQuery(raw);
+  return buildPageHref(query, query.page);
 }
 
 export function toApiSort(sort: SortOption): ApiSort {

@@ -1,0 +1,7 @@
+{
+  "name": "lighthouse-app",
+  "private": true,
+  "scripts": {
+    "build": "npm --prefix frontend run build:static && node scripts/stage-static.mjs"
+  }
+}

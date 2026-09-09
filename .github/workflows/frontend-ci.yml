@@ -4,15 +4,21 @@ on:
   pull_request:
     paths:
       - "frontend/**"
+      - "backend/app/db/seeds/lighthouses.json"
+      - "package.json"
+      - "scripts/**"
       - ".github/workflows/frontend-ci.yml"
-      - "docs/dependency-security.md"
+      - "docs/**"
   push:
     branches:
       - main
     paths:
       - "frontend/**"
+      - "backend/app/db/seeds/lighthouses.json"
+      - "package.json"
+      - "scripts/**"
       - ".github/workflows/frontend-ci.yml"
-      - "docs/dependency-security.md"
+      - "docs/**"
   schedule:
     - cron: "0 0 * * 1"
   workflow_dispatch:
@@ -39,6 +45,8 @@ jobs:
             command: npm run typecheck
           - name: Test
             command: npm test
+          - name: Static export
+            command: npm run test:static
           - name: Build
             command: npm run build
           - name: HTTP integration

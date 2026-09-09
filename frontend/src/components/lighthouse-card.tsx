@@ -4,22 +4,24 @@ import { formatLocation, formatYear } from "@/lib/format";
 import type { Lighthouse } from "@/types/lighthouse";
 
 import { LighthouseVisual } from "./lighthouse-visual";
+import { LighthousePhoto } from "./lighthouse-photo";
 
 interface LighthouseCardProps {
   lighthouse: Lighthouse;
   sequence?: number;
+  returnHref?: string;
 }
 
-export function LighthouseCard({ lighthouse, sequence }: LighthouseCardProps) {
+export function LighthouseCard({ lighthouse, sequence, returnHref = "/" }: LighthouseCardProps) {
   const year = formatYear(lighthouse.first_lit_date, lighthouse.built_year);
 
   return (
     <article className="lighthouse-card">
       <div className="lighthouse-card__visual">
-        <LighthouseVisual
+        {lighthouse.slug === "omaesaki" ? <LighthousePhoto compact /> : <LighthouseVisual
           visualId={lighthouse.slug}
           label={`${lighthouse.name}のイメージ図版`}
-        />
+        />}
         {sequence && (
           <span className="lighthouse-card__number" aria-hidden="true">
             {String(sequence).padStart(2, "0")}
@@ -44,7 +46,7 @@ export function LighthouseCard({ lighthouse, sequence }: LighthouseCardProps) {
         </p>
         <div className="lighthouse-card__footer">
           <span>{year ? `初点灯 ${year}` : "初点灯年 調査中"}</span>
-          <Link className="text-link" href={`/lighthouses/${lighthouse.slug}`}>
+          <Link className="text-link" href={`/lighthouses/${lighthouse.slug}${returnHref === "/" ? "" : `?from=${encodeURIComponent(returnHref)}`}`}>
             灯台の記録を見る
             <span aria-hidden="true">→</span>
           </Link>

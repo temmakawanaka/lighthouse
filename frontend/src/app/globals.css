@@ -1756,3 +1756,36 @@ button:disabled {
     animation: none;
   }
 }
+
+/* The guide opens on the search itself. Keep the existing paper and sea palette. */
+.directory-heading { display: flex; justify-content: space-between; align-items: end; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
+.directory-heading h1 { font-family: var(--serif); font-size: clamp(1.8rem, 4vw, 2.5rem); letter-spacing: .03em; line-height: 1.4; margin: .4rem 0; }
+.directory-heading p { margin: .4rem 0; }
+.directory-edition { font-size: .875rem; color: var(--ink-700); }
+.directory-page .search-section { padding-block: 2rem 1.6rem; }
+.directory-page .results-section { padding-top: 1.5rem; }
+.directory-page .kicker { font-size: .875rem; letter-spacing: .12em; }
+.lighthouse-card__body, .card-description, .detail-hero__description, .detail-list dd, .side-card address { font-size: 1rem; }
+.field label, .check-field, .button, .text-link, .header-link, .back-link, .pagination, .detail-list dt, .source-list, .sort-control { font-size: .875rem; }
+.badge, .location-label, .english-name, .lighthouse-card__footer, .side-card__description, .coordinate-list, .source-notes { font-size: .8125rem; }
+.lighthouse-photo { margin: 0; width: 100%; height: 100%; background: var(--paper-25); }
+.lighthouse-photo img { display: block; width: 100%; height: auto; }
+.lighthouse-photo figcaption { padding: .6rem .8rem; font-size: .75rem; line-height: 1.5; color: var(--ink-800); }
+.lighthouse-photo a { text-decoration: underline; text-underline-offset: .2em; }
+.lighthouse-photo--compact img { width: 100%; height: auto; }
+.lighthouse-photo--compact figcaption { padding-left: 3.5rem; }
+.visit-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.5rem; }
+.visit-actions .button { min-height: 44px; }
+.visit-check { border-left: 3px solid var(--sea-700); padding: 1rem 1.25rem; background: var(--sea-50); margin-bottom: 1.5rem; }
+.visit-check p { margin: .35rem 0; font-size: 1rem; }
+.visit-check .visit-check__date { font-size: .875rem; color: var(--ink-700); }
+.visit-check .visit-check__notice { color: var(--signal-700); font-weight: 600; }
+.source-notes { border-top: 1px solid var(--line); margin-top: 1rem; padding-top: 1rem; }
+@media (max-width: 640px) {
+  .directory-page .search-section { padding-top: 1.25rem; }
+  .directory-heading { gap: .35rem; }
+  .directory-heading h1 { font-size: 1.8rem; }
+  .visit-actions { flex-direction: column; }
+  .visit-actions a { width: 100%; }
+  .visit-check { padding: .8rem 1rem; }
+}

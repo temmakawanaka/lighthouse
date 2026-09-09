@@ -34,7 +34,10 @@ export function formatLocation(
 
 export function sourceLabel(url: string, index: number): string {
   try {
-    return new URL(url).hostname.replace(/^www\./, "");
+    const parsed = new URL(url);
+    if (parsed.hostname === "www.tokokai.org") return /\/tourlight\/tourlight\d+/.test(parsed.pathname) ? "燈光会：この灯台の参観案内" : "燈光会：のぼれる灯台一覧";
+    if (parsed.hostname === "www.kaiho.mlit.go.jp" && parsed.pathname === "/soshiki/koutsuu/toudai/kengaku.html") return "海上保安庁：参観できる灯台";
+    return parsed.hostname.replace(/^www\./, "");
   } catch {
     return `情報源 ${index + 1}`;
   }

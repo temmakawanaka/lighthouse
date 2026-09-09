@@ -1,11 +1,27 @@
 import assert from "node:assert/strict";
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { once } from "node:events";
 import { createServer } from "node:http";
 import process from "node:process";
 
 const host = "127.0.0.1";
 const knownSlug = "inubosaki";
+
+const build = spawnSync(
+  process.execPath,
+  ["node_modules/next/dist/bin/next", "build"],
+  {
+    env: {
+      ...process.env,
+      LIGHTHOUSE_DATA_SOURCE: "api",
+      LIGHTHOUSE_API_BASE_URL: `http://${host}`,
+      NEXT_TELEMETRY_DISABLED: "1",
+    },
+    stdio: "inherit",
+  },
+);
+assert.equal(build.status, 0, "API mode build failed");
+
 const lighthouse = {
   id: "00000000-0000-0000-0000-000000000001",
   name: "犬吠埼灯台",
@@ -128,6 +144,7 @@ const appServer = spawn(
   {
     env: {
       ...process.env,
+      LIGHTHOUSE_DATA_SOURCE: "api",
       LIGHTHOUSE_API_BASE_URL: `http://${host}:${apiAddress.port}`,
       NEXT_TELEMETRY_DISABLED: "1",
     },
@@ -148,7 +165,7 @@ try {
   );
   const existingHtml = await existingResponse.text();
 
-  assert.equal(existingResponse.status, 200);
+  assert.equal(existingResponse.status, 200, output.join(""));
   assert.match(existingHtml, /犬吠埼灯台/);
 
   const missingResponse = await fetch(`${baseUrl}/lighthouses/does-not-exist`, {
@@ -157,7 +174,7 @@ try {
   });
   const missingHtml = await missingResponse.text();
 
-  assert.equal(missingResponse.status, 404);
+  assert.equal(missingResponse.status, 404, output.join(""));
   assert.match(missingHtml, /灯台が見つかりませんでした/);
   assert.match(missingHtml, /<meta[^>]+name="robots"[^>]+content="noindex"/);
 

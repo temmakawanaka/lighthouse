@@ -1,6 +1,8 @@
 # 灯台アプリ
 
-日本各地の灯台を検索し、歴史・諸元・参観情報を確認できるWebアプリです。FastAPIのバックエンドと、Next.jsのフロントエンドで構成しています。
+「次に訪れる灯台を決める」ための、日本の灯台フィールドガイドです。名称・読み・地域から「のぼれる灯台16」を探し、歴史・諸元・参観条件を確認して、公式案内や地図へ進めます。
+
+通常はアプリ内の検証済みカタログだけで動作し、サーバーやデータベースを必要としません。既存のFastAPIバックエンドへ接続する構成も維持しています。
 
 ## 技術スタック
 
@@ -62,12 +64,11 @@ uvicorn app.main:app --reload
 
 ### 2. フロントエンド
 
-別のターミナルを開き、依存関係と環境変数を準備します。
+別のターミナルを開き、依存関係を準備します。
 
 ```powershell
 cd frontend
 npm install
-Copy-Item .env.example .env.local
 ```
 
 開発サーバーを起動します。
@@ -78,7 +79,24 @@ npm run dev
 
 ブラウザで http://localhost:3000 を開きます。
 
-フロントエンドは `LIGHTHOUSE_API_BASE_URL` で接続先APIを切り替えます。未設定時は `http://localhost:8000` を使用します。
+既定では同梱カタログを使います。バックエンドへ接続するときだけ `.env.local` に次を設定します。
+
+```dotenv
+LIGHTHOUSE_DATA_SOURCE=api
+LIGHTHOUSE_API_BASE_URL=http://localhost:8000
+```
+
+この2つの値は、API版のビルド時と起動時の両方に設定してください。
+
+## 静的サイトとして公開
+
+```powershell
+cd frontend
+npm run test:static
+npm run preview:static
+```
+
+`test:static` は16基の詳細ページ、アセット、404応答、情報確認日を検証します。静的出力は `frontend/out` に生成されます。ルートで `npm run build` を実行すると、ホスティング用の `out` へまとめます。
 
 ## 画面
 
@@ -136,11 +154,14 @@ cd frontend
 npm run lint
 npm run typecheck
 npm test
+npm run test:static
 npm run build
 npm run test:http-status
 npm run test:e2e
 npm run audit:production
 ```
+
+データ更新方針と確認記録は `docs/data-review-2026-09-09.md`、静的ホスティング構成は `docs/static-hosting.md` を参照してください。
 
 初回のE2Eテスト前に、Chromiumをインストールします。
 

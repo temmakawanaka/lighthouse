@@ -9,7 +9,7 @@ export default defineConfig({
     },
   },
   test: {
-    exclude: [...configDefaults.exclude, "e2e/**"],
+    exclude: [...configDefaults.exclude, "e2e/**", "e2e-static/**"],
     environment: "jsdom",
     setupFiles: ["./vitest.setup.ts"],
   },
