@@ -9,6 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: origin, lastModified: updated, changeFrequency: "weekly", priority: 1 },
     { url: `${origin}/map/`, lastModified: updated, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${origin}/stamps/`, lastModified: updated, changeFrequency: "monthly", priority: 0.7 },
     { url: `${origin}/trip/`, lastModified: updated, changeFrequency: "monthly", priority: 0.8 },
     ...catalog.map(({ slug }) => ({ url: `${origin}/lighthouses/${slug}/`, lastModified: updated, changeFrequency: "monthly" as const, priority: 0.7 })),
   ];

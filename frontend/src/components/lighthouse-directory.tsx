@@ -5,6 +5,7 @@ import { SearchFilterForm } from "./search-filter-form";
 import { SearchNavigationProvider } from "./search-navigation-provider";
 import { SortSelect } from "./sort-select";
 import { PAGE_SIZE } from "@/lib/constants";
+import { catalog } from "@/lib/catalog";
 import { buildPageHref, type ListQuery } from "@/lib/query-params";
 import type { LighthouseListResponse } from "@/types/lighthouse";
 
@@ -19,12 +20,13 @@ export function LighthouseDirectory({ query, result }: { query: ListQuery; resul
           <div className="shell">
             <div className="directory-heading">
               <div>
-                <p className="kicker">日本の海辺をめぐる案内帖</p>
-                <h1 id="search-heading">のぼれる灯台を探す</h1>
-                <p>名前や地域から、次に訪れる一基を。</p>
+                <p className="kicker">GPS LIGHTHOUSE RALLY</p>
+                <h1 id="search-heading">灯台を訪ね、スタンプを集める</h1>
+                <p>地図で見つけて、現地でチェックイン。海辺の旅を自分だけのコレクションに。</p>
               </div>
-              <p className="directory-edition">収録：燈光会「のぼれる灯台16」</p>
+              <p className="directory-edition">収録 {catalog.length}基｜のぼれる灯台16＋日本の灯台50選</p>
             </div>
+            <div className="rally-shortcuts"><a className="rally-shortcuts__primary" href="/map/"><strong>GPSマップを開く</strong><span>現在地と灯台ピンを見る →</span></a><a href="/stamps/"><strong>スタンプ帳</strong><span>獲得状況を見る →</span></a></div>
             <SearchFilterForm />
           </div>
         </section>

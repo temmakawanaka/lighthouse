@@ -4,15 +4,16 @@ import { SiteHeader } from "@/components/site-header";
 import { LighthouseStatusProvider } from "@/components/lighthouse-status-provider";
 import { ServiceWorkerRegister } from "@/components/service-worker-register";
 
+import "leaflet/dist/leaflet.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://lighthouse-field-guide.colet3020.chatgpt.site"),
   title: {
-    default: "灯台アプリ｜のぼれる灯台を探す",
+    default: "灯台アプリ｜GPSで集める灯台スタンプラリー",
     template: "%s｜灯台アプリ",
   },
-  description: "日本各地の参観できる灯台を、地域や名前から探せる灯台ガイドです。",
+  description: "日本各地の灯台を地図で探し、現地のGPSチェックインでデジタルスタンプを集める灯台スタンプラリーです。",
   manifest: "/manifest.webmanifest",
   icons: { icon: [{ url: "/icon.svg", type: "image/svg+xml" }, { url: "/icon-192.png", sizes: "192x192", type: "image/png" }], apple: "/apple-touch-icon.png" },
 };

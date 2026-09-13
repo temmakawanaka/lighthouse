@@ -7,6 +7,7 @@ import { BackToListLink } from "@/components/back-to-list-link";
 import { DetailSection, hasVisibleDetailValue } from "@/components/detail-section";
 import { LighthousePhoto } from "@/components/lighthouse-photo";
 import { LighthouseStatusActions } from "@/components/lighthouse-status-actions";
+import { GpsCheckIn } from "@/components/gps-check-in";
 import { NearbyLighthouses } from "@/components/nearby-lighthouses";
 import { officialVisitUrl, directionsUrl } from "@/lib/visit-links";
 import {
@@ -153,14 +154,16 @@ export default async function LighthouseDetailPage({ params }: LighthouseDetailP
             </div>
           </header>
 
+          <GpsCheckIn lighthouse={lighthouse} />
+
           <div className="detail-layout">
             <div className="detail-layout__main">
-              <section className="visit-check" aria-label="参観前の確認">
+              {lighthouse.is_visitable && <section className="visit-check" aria-label="参観前の確認">
                 <p><strong>お出かけ前に</strong>　天候や工事による休止は、公式の参観案内でご確認ください。</p>
                 {lighthouse.visit_checked_at && <p className="visit-check__date">参観情報の確認日：<time dateTime={lighthouse.visit_checked_at}>{formatDate(lighthouse.visit_checked_at)}</time></p>}
                 {lighthouse.visit_notice && <p className="visit-check__notice">{lighthouse.visit_notice}</p>}
                 {lighthouse.visit_info?.includes("土日等") && <p>「土日等」は土・日・祝休日、GW、8月10〜19日、12月29日〜1月3日を含みます。</p>}
-              </section>
+              </section>}
               <DetailSection title="歴史・基本情報" eyebrow="HISTORY" items={basicItems} />
               <DetailSection
                 title="灯台の諸元"

@@ -15,7 +15,7 @@ test("代表的な画面幅で主要要素が表示され、横スクロール�
   await page.goto("/");
 
   await expect(
-    page.getByRole("heading", { name: "のぼれる灯台を探す", level: 1 }),
+    page.getByRole("heading", { name: "灯台を訪ね、スタンプを集める", level: 1 }),
   ).toBeVisible();
   await expect(page.getByLabel("キーワード")).toBeVisible();
   await expect(page.getByLabel("都道府県")).toBeVisible();

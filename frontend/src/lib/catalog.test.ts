@@ -2,15 +2,20 @@ import { describe, expect, it } from "vitest";
 import { catalog, getCatalogLighthouse, searchCatalog } from "./catalog";
 import { parseListQuery } from "./query-params";
 import reviews from "@/data/visit-reviews.json";
+import { PAGE_SIZE } from "./constants";
 
 describe("bundled lighthouse directory", () => {
-  it("contains all 16 sourced records with unique direct links and scoped verification dates", () => {
-    expect(catalog).toHaveLength(16);
-    expect(new Set(catalog.map((record) => record.slug)).size).toBe(16);
+  it("contains the 16 climbable and additional sourced records with unique slugs", () => {
+    expect(catalog.length).toBeGreaterThan(16);
+    expect(catalog.filter((record) => record.is_visitable)).toHaveLength(16);
+    expect(new Set(catalog.map((record) => record.slug)).size).toBe(catalog.length);
     for (const record of catalog) {
       expect(getCatalogLighthouse(record.slug)).toEqual(record);
-      expect(record.source_urls).toContain(reviews[record.slug as keyof typeof reviews].source_url);
-      expect(record.visit_checked_at).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      const review = reviews[record.slug as keyof typeof reviews];
+      if (record.is_visitable) {
+        expect(record.source_urls).toContain(review.source_url);
+        expect(record.visit_checked_at).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      }
     }
     expect(getCatalogLighthouse("missing")).toBeUndefined();
   });
@@ -23,10 +28,10 @@ describe("bundled lighthouse directory", () => {
     const first = searchCatalog(parseListQuery({}));
     const second = searchCatalog(parseListQuery({ page: "2" }));
     expect(first.items).toHaveLength(12);
-    expect(second.items).toHaveLength(4);
+    expect(second.items).toHaveLength(12);
     expect(first.has_more).toBe(true);
-    expect(second.has_more).toBe(false);
-    expect(new Set([...first.items, ...second.items].map((record) => record.slug)).size).toBe(16);
+    expect(second.has_more).toBe(true);
+    expect(new Set([...first.items, ...second.items].map((record) => record.slug)).size).toBe(PAGE_SIZE * 2);
     expect(searchCatalog(parseListQuery({ prefecture: "静岡県", visitable: "true" })).total).toBe(2);
     expect(searchCatalog(parseListQuery({ prefecture: "静岡県", q: "犬吠埼" })).total).toBe(0);
   });

@@ -5,16 +5,23 @@ import { catalog } from "@/lib/catalog";
 import { formatLocation } from "@/lib/format";
 
 const prefectureIds: Record<string, string> = {
+  "北海道": "hokkaido",
   "青森県": "aomori",
   "秋田県": "akita",
   "福島県": "fukushima",
   "千葉県": "chiba",
   "神奈川県": "kanagawa",
   "静岡県": "shizuoka",
+  "愛知県": "aichi",
+  "石川県": "ishikawa",
+  "京都府": "kyoto",
   "三重県": "mie",
   "和歌山県": "wakayama",
   "山口県": "yamaguchi",
   "島根県": "shimane",
+  "香川県": "kagawa",
+  "愛媛県": "ehime",
+  "高知県": "kochi",
   "宮崎県": "miyazaki",
   "沖縄県": "okinawa",
 };
@@ -35,7 +42,7 @@ export function JapanLighthouseMap() {
     <div className="map-layout">
       <figure className="japan-map">
         <svg viewBox={japan.viewBox} role="img" aria-labelledby="map-title map-description">
-          <title id="map-title">のぼれる灯台16の都道府県分布図</title>
+          <title id="map-title">収録灯台の都道府県分布図</title>
           <desc id="map-description">色の濃い都道府県を選ぶと、その地域の灯台一覧へ移動します。</desc>
           {japan.locations.map((location: { id: string; name: string; path: string }) => {
             const active = activeById.get(location.id);
