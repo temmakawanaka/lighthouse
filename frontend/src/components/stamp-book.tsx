@@ -9,13 +9,14 @@ export function StampBook() {
   const earned = Object.keys(stamps).filter((slug) => catalog.some((item) => item.slug === slug)).length;
   const climbable = catalog.filter((item) => item.is_visitable);
   const selected = catalog.filter((item) => item.selections.includes("日本の灯台50選"));
+  const stampable = catalog.filter((item) => item.gps_check_in_available !== false);
   const countEarned = (records: typeof catalog) => records.filter((item) => stamps[item.slug]).length;
   const milestones = [
     { count: 1, name: "はじめの灯" },
     { count: 5, name: "岬めぐり" },
     { count: 10, name: "海辺の旅人" },
     { count: 16, name: "十六灯制覇" },
-    { count: catalog.length, name: "灯台蒐集家" },
+    { count: stampable.length, name: "灯台蒐集家" },
   ];
 
   if (!ready) return <p className="stamp-book__loading" aria-live="polite">スタンプ帳を開いています。</p>;
@@ -24,13 +25,13 @@ export function StampBook() {
     <section className="stamp-progress" aria-labelledby="stamp-progress-heading">
       <div>
         <p className="kicker">COLLECTION</p>
-        <h2 id="stamp-progress-heading">{earned} / {catalog.length} 基</h2>
+        <h2 id="stamp-progress-heading">{earned} / {stampable.length} 基</h2>
         <p>現地でGPSチェックインした灯台だけが、朱色のスタンプになります。</p>
       </div>
-      <div className="stamp-progress__rings" aria-label={`全${catalog.length}基中${earned}基を獲得`}>
-        <strong>{Math.round(earned / catalog.length * 100)}%</strong><span>収集率</span>
+      <div className="stamp-progress__rings" aria-label={`GPS対象${stampable.length}基中${earned}基を獲得`}>
+        <strong>{Math.round(earned / stampable.length * 100)}%</strong><span>収集率</span>
       </div>
-      <progress max={catalog.length} value={earned}>{earned} / {catalog.length}</progress>
+      <progress max={stampable.length} value={earned}>{earned} / {stampable.length}</progress>
     </section>
     <div className="stamp-series" aria-label="シリーズ別の収集状況">
       <p><strong>のぼれる灯台</strong><span>{countEarned(climbable)} / {climbable.length}</span></p>
@@ -46,8 +47,8 @@ export function StampBook() {
             <strong>灯</strong>
             <small>{stamp ? new Date(stamp.obtainedAt).toLocaleDateString("ja-JP") : "未取得"}</small>
           </div>
-          <div><p>{stamp ? "CHECKED IN" : "DISCOVER"}</p><h3>{lighthouse.name}</h3><span>{lighthouse.municipality}</span></div>
-          <Link href={`/lighthouses/${lighthouse.slug}?from=${encodeURIComponent("/stamps/")}`}>{stamp ? "記録を見る" : "場所を確認"}<span aria-hidden="true"> →</span></Link>
+          <div><p>{stamp ? "CHECKED IN" : lighthouse.gps_check_in_available === false ? "REMOTE LIGHT" : "DISCOVER"}</p><h3>{lighthouse.name}</h3><span>{lighthouse.municipality}</span></div>
+          <Link href={`/lighthouses/${lighthouse.slug}?from=${encodeURIComponent("/stamps/")}`}>{stamp ? "記録を見る" : lighthouse.gps_check_in_available === false ? "遠望情報を見る" : "場所を確認"}<span aria-hidden="true"> →</span></Link>
         </article>;
       })}
     </section>

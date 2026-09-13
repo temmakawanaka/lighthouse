@@ -50,6 +50,8 @@ export interface Lighthouse {
   updated_at: string;
   visit_checked_at?: string;
   visit_notice?: string | null;
+  gps_check_in_available?: boolean;
+  gps_check_in_note?: string | null;
 }
 
 export interface LighthouseListResponse {

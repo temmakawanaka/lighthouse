@@ -12,6 +12,16 @@ const wait = (milliseconds) => new Promise((resolveWait) => setTimeout(resolveWa
 
 for (const [slug, photo] of Object.entries(sources)) {
   if (photo.src.startsWith("/")) continue;
+  const localPhoto = resolve(imageDirectory, `${slug}.webp`);
+  const localThumbnail = resolve(thumbnailDirectory, `${slug}.webp`);
+  try {
+    if ((await stat(localPhoto)).size >= 5_000 && (await stat(localThumbnail)).size >= 5_000) {
+      console.log(`${slug}: cached`);
+      continue;
+    }
+  } catch {
+    // Missing or incomplete files are downloaded below.
+  }
   let response;
   for (let attempt = 1; attempt <= 4; attempt += 1) {
     response = await fetch(photo.src, { headers: { "User-Agent": "lighthouse-field-guide/1.0 (+https://github.com/temmakawanaka/lighthouse)" } });
@@ -20,9 +30,9 @@ for (const [slug, photo] of Object.entries(sources)) {
     await wait(attempt * 3000);
   }
   const bytes = Buffer.from(await response.arrayBuffer());
-  if (bytes.length < 10_000 || bytes.length > 8_000_000) throw new Error(`${slug}: unexpected image size ${bytes.length}`);
-  await sharp(bytes).rotate().resize({ width: 1280, height: 1280, fit: "inside", withoutEnlargement: true }).webp({ quality: 78 }).toFile(resolve(imageDirectory, `${slug}.webp`));
-  await sharp(bytes).rotate().resize({ width: 640, height: 640, fit: "inside", withoutEnlargement: true }).webp({ quality: 72 }).toFile(resolve(thumbnailDirectory, `${slug}.webp`));
+  if (bytes.length < 10_000 || bytes.length > 40_000_000) throw new Error(`${slug}: unexpected image size ${bytes.length}`);
+  await sharp(bytes).rotate().resize({ width: 1280, height: 1280, fit: "inside", withoutEnlargement: true }).webp({ quality: 78 }).toFile(localPhoto);
+  await sharp(bytes).rotate().resize({ width: 640, height: 640, fit: "inside", withoutEnlargement: true }).webp({ quality: 72 }).toFile(localThumbnail);
   console.log(`${slug}: ${bytes.length} bytes`);
   await wait(1200);
 }
@@ -30,6 +40,6 @@ for (const [slug, photo] of Object.entries(sources)) {
 for (const slug of Object.keys(sources)) {
   const filename = slug === "omaesaki" ? "omaezaki-lighthouse-alpsdake" : slug;
   for (const path of [resolve(imageDirectory, `${filename}.webp`), resolve(thumbnailDirectory, `${filename}.webp`)]) {
-    if ((await stat(path)).size < 10_000) throw new Error(`${slug}: local photo is missing or too small`);
+    if ((await stat(path)).size < 5_000) throw new Error(`${slug}: local photo is missing or too small`);
   }
 }

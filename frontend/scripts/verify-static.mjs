@@ -40,13 +40,13 @@ try {
     assert((await response.text()).includes(expected), path);
   }
   const detailDirectories = (await readdir(resolve("out", "lighthouses"), { withFileTypes: true })).filter((entry) => entry.isDirectory());
-  assert.equal(detailDirectories.length, 30, "all 30 lighthouse detail routes");
+  assert.equal(detailDirectories.length, 52, "all 52 lighthouse detail routes");
   for (const entry of detailDirectories) {
     const path = `/lighthouses/${entry.name}/`;
     const response = await fetch(origin + path);
     assert.equal(response.status, 200, path);
     const html = await response.text();
-    assert(html.includes("現地でスタンプを獲得"), path);
+    assert(html.includes("現地でスタンプを獲得") || html.includes("安全なチェックイン地点を準備中"), path);
     assert(html.includes("ここへの経路を調べる"), path);
   }
   const featured = await fetch(origin + "/lighthouses/soyamisaki/");

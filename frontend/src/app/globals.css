@@ -2102,6 +2102,9 @@ button:disabled {
 .trip-candidate-list { display: grid; gap: 10px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .trip-candidate-list li { align-items: center; background: var(--white); border: 1px solid var(--line-dark); display: grid; gap: 11px; grid-template-columns: 76px minmax(0, 1fr) auto; min-height: 88px; padding: 7px; }
 .trip-candidate-list img { height: 72px; object-fit: cover; width: 76px; }
+.trip-candidate-list .lighthouse-photo { height: 72px; margin: 0; overflow: hidden; width: 76px; }
+.trip-candidate-list .lighthouse-visual { height: 72px; min-height: 72px; width: 76px; }
+.trip-candidate-list .lighthouse-visual svg { height: 100%; object-fit: cover; width: 100%; }
 .trip-candidate-list strong, .trip-candidate-list span, .trip-candidate-list small { display: block; }
 .trip-candidate-list strong { font-size: .875rem; }
 .trip-candidate-list span { color: var(--ink-600); font-size: .75rem; margin-top: 2px; }

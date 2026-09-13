@@ -1,12 +1,16 @@
 import seed from "@/data/lighthouses.json";
 import { featuredLighthouses } from "@/data/featured-lighthouses";
 import reviews from "@/data/visit-reviews.json";
+import { lighthouse50Slugs } from "@/data/lighthouse-50";
 import { PAGE_SIZE, PREFECTURES } from "@/lib/constants";
 import { toApiSort, type ListQuery } from "@/lib/query-params";
 import type { Lighthouse, LighthouseListResponse } from "@/types/lighthouse";
 
 export const catalog: Lighthouse[] = [...seed.map((record) => ({
   ...record, id: record.slug, is_active: true,
+  selections: lighthouse50Slugs.has(record.slug)
+    ? [...new Set([...record.selections, "日本の灯台50選"])]
+    : record.selections,
   // No database timestamps exist in the seed. The build date is not a source verification date.
   created_at: "", updated_at: "",
   visit_checked_at: reviews[record.slug as keyof typeof reviews]?.checked_at,

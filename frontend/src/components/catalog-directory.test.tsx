@@ -36,7 +36,7 @@ describe("static directory URL state", () => {
     navigation.query = "prefecture=静岡県&page=999";
     render(<CatalogDirectory />);
     await waitFor(() => expect(navigation.replace).toHaveBeenCalledWith("/?prefecture=%E9%9D%99%E5%B2%A1%E7%9C%8C", { scroll: false }));
-    expect(screen.getByRole("heading", { name: "灯台一覧 3件" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "灯台一覧 4件" })).toBeInTheDocument();
   });
   it("handles no results and repeated query parameters consistently with the server", () => {
     navigation.query = "q=存在しない灯台&q=犬吠埼";
