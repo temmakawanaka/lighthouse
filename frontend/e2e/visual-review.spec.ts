@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 test("レビュー用に一覧と詳細画面を記録する", async ({ page }, testInfo) => {
   await page.goto("/");
   await expect(
-    page.getByRole("heading", { name: "のぼれる灯台を探す", level: 1 }),
+    page.getByRole("heading", { name: "灯台を訪ね、スタンプを集める", level: 1 }),
   ).toBeVisible();
   await expect(page.locator(".lighthouse-card")).toHaveCount(12);
   await testInfo.attach(`${testInfo.project.name}-home`, {

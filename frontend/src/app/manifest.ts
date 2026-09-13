@@ -6,7 +6,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "灯台アプリ｜日本の海辺をめぐる案内帖",
     short_name: "灯台アプリ",
-    description: "のぼれる灯台16を探し、参観情報を確認できるフィールドガイド。",
+    description: "日本各地の灯台を地図で探し、GPSチェックインでスタンプを集めるフィールドガイド。",
     id: "/",
     start_url: "/",
     scope: "/",

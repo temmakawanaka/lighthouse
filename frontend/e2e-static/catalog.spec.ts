@@ -4,7 +4,7 @@ test("静的版で検索・詳細・再読み込み・一覧への復帰が動�
   const apiRequests: string[] = [];
   page.on("request", (request) => { if (new URL(request.url()).pathname.startsWith("/api/")) apiRequests.push(request.url()); });
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "灯台一覧 16件" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "灯台一覧 30件" })).toBeVisible();
   await page.getByLabel("キーワード").fill("御前崎");
   await page.getByRole("button", { name: "検索する" }).click();
   await expect(page.getByRole("heading", { name: "灯台一覧 1件" })).toBeVisible();
@@ -27,11 +27,22 @@ test("静的版のURL条件・戻る・ページ補正・0件を処理する", a
   await page.goBack();
   await expect(page.getByLabel("都道府県")).toHaveValue("千葉県");
   await page.goto("/?page=999");
-  await expect(page.locator(".pagination__status")).toContainText("2 / 2ページ");
-  await expect(page.locator(".lighthouse-card")).toHaveCount(4);
-  await expect.poll(() => new URL(page.url()).searchParams.get("page")).toBe("2");
+  await expect(page.locator(".pagination__status")).toContainText("3 / 3ページ");
+  await expect(page.locator(".lighthouse-card")).toHaveCount(6);
+  await expect.poll(() => new URL(page.url()).searchParams.get("page")).toBe("3");
   await page.goto("/?q=存在しない灯台");
   await expect(page.getByRole("heading", { name: "条件に一致する灯台が見つかりませんでした" })).toBeVisible();
+});
+
+test("現地のGPSチェックインでスタンプを獲得できる", async ({ context, page }) => {
+  await context.grantPermissions(["geolocation"], { origin: "http://127.0.0.1:3000" });
+  await context.setGeolocation({ latitude: 34.595556, longitude: 138.226389 });
+  await page.goto("/lighthouses/omaesaki/");
+  await page.getByRole("button", { name: "GPSでチェックイン" }).click();
+  await expect(page.getByText(/スタンプを獲得しました/)).toBeVisible();
+  await page.goto("/stamps/");
+  await expect(page.getByRole("heading", { name: "1 / 30 基" })).toBeVisible();
+  await expect(page.locator(".stamp-slot--earned")).toHaveCount(1);
 });
 
 test("静的版の詳細直リンクと404、各画面幅の表示を維持する", async ({ page }) => {

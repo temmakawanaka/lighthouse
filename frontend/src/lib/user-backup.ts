@@ -25,6 +25,7 @@ export function parseUserBackup(value: string, validSlugs: ReadonlySet<string>):
     favorites: allowed(validStatus.favorites),
     visited: allowed(validStatus.visited),
     visits: Object.fromEntries(Object.entries(validStatus.visits).filter(([slug]) => validSlugs.has(slug))),
+    stamps: Object.fromEntries(Object.entries(validStatus.stamps).filter(([slug]) => validSlugs.has(slug))),
   };
   return {
     app: "lighthouse-field-guide",

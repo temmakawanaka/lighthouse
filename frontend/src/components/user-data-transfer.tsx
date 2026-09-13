@@ -9,14 +9,14 @@ import { useLighthouseStatus } from "./lighthouse-status-provider";
 const validSlugs = new Set(catalog.map(({ slug }) => slug));
 
 export function UserDataTransfer() {
-  const { favorites, visited, visits, replaceStatus } = useLighthouseStatus();
+  const { favorites, visited, visits, stamps, replaceStatus } = useLighthouseStatus();
   const inputRef = useRef<HTMLInputElement>(null);
   const [message, setMessage] = useState("");
   const [error, setError] = useState(false);
 
   const download = () => {
     const trip = parseTripPlan(window.localStorage.getItem(TRIP_STORAGE_KEY), validSlugs);
-    const backup = createUserBackup({ version: 2, favorites, visited, visits }, trip);
+    const backup = createUserBackup({ version: 3, favorites, visited, visits, stamps }, trip);
     const url = URL.createObjectURL(new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" }));
     const anchor = document.createElement("a");
     anchor.href = url;
@@ -36,7 +36,7 @@ export function UserDataTransfer() {
       window.localStorage.setItem(TRIP_STORAGE_KEY, JSON.stringify(backup.trip ?? emptyTripPlan));
       window.dispatchEvent(new Event("lighthouse-trip-updated"));
       setError(false);
-      setMessage(`記録を復元しました（行きたい ${backup.status.favorites.length}基・訪問済み ${backup.status.visited.length}基）。`);
+      setMessage(`記録を復元しました（行きたい ${backup.status.favorites.length}基・スタンプ ${Object.keys(backup.status.stamps).length}基）。`);
     } catch (caught) {
       setError(true);
       setMessage(caught instanceof Error ? caught.message : "バックアップを読み込めませんでした。");

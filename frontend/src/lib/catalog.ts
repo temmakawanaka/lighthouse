@@ -1,16 +1,17 @@
 import seed from "@/data/lighthouses.json";
+import { featuredLighthouses } from "@/data/featured-lighthouses";
 import reviews from "@/data/visit-reviews.json";
 import { PAGE_SIZE, PREFECTURES } from "@/lib/constants";
 import { toApiSort, type ListQuery } from "@/lib/query-params";
 import type { Lighthouse, LighthouseListResponse } from "@/types/lighthouse";
 
-export const catalog: Lighthouse[] = seed.map((record) => ({
+export const catalog: Lighthouse[] = [...seed.map((record) => ({
   ...record, id: record.slug, is_active: true,
   // No database timestamps exist in the seed. The build date is not a source verification date.
   created_at: "", updated_at: "",
   visit_checked_at: reviews[record.slug as keyof typeof reviews]?.checked_at,
   visit_notice: reviews[record.slug as keyof typeof reviews]?.notice,
-}));
+})), ...featuredLighthouses];
 
 export function normalizeSearch(value: string): string {
   return value.normalize("NFKC").toLocaleLowerCase("ja-JP")

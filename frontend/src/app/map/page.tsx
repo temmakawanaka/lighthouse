@@ -3,10 +3,11 @@ import Link from "next/link";
 
 import { JapanLighthouseMap } from "@/components/japan-lighthouse-map";
 import { NearestLighthouses } from "@/components/nearest-lighthouses";
+import { LighthousePinMap } from "@/components/lighthouse-pin-map";
 
 export const metadata: Metadata = {
   title: "地図から灯台を探す",
-  description: "のぼれる灯台16を、日本地図と都道府県から探せます。",
+  description: "日本各地の灯台をピン地図や現在地から探し、GPSスタンプの獲得状況を確認できます。",
   alternates: { canonical: "/map/" },
 };
 
@@ -17,10 +18,11 @@ export default function MapPage() {
         <div className="shell">
           <p className="kicker">LIGHTHOUSE MAP</p>
           <h1>地図から灯台を探す</h1>
-          <p>色のついた都道府県、または灯台名から選べます。</p>
+          <p>灯台ピンと現在地から、次に訪れる海辺を探せます。</p>
         </div>
       </header>
       <div className="shell map-page__content">
+        <LighthousePinMap />
         <NearestLighthouses />
         <JapanLighthouseMap />
         <p className="map-page__note">道路や周辺施設は、各灯台の詳細ページからGoogle Mapsで確認できます。</p>

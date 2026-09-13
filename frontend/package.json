@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@svg-maps/japan": "2.0.0",
+    "leaflet": "1.9.4",
     "next": "16.3.4",
     "react": "19.2.7",
     "react-dom": "19.2.7"
@@ -33,6 +34,7 @@
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "16.3.2",
     "@types/node": "26.1.1",
+    "@types/leaflet": "1.9.21",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
     "eslint": "9.39.5",

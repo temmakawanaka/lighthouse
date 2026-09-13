@@ -3,7 +3,7 @@ import { MyLighthouses } from "@/components/my-lighthouses";
 
 export const metadata: Metadata = {
   title: "マイ灯台",
-  description: "行きたい灯台と訪問済みの灯台を、この端末で記録できます。",
+  description: "行きたい灯台と、自分で残した訪問メモをこの端末で管理できます。",
   alternates: { canonical: "/my-lighthouses/" },
   robots: { index: false, follow: true },
 };
@@ -15,7 +15,7 @@ export default function MyLighthousesPage() {
         <div className="shell">
           <p className="kicker">MY LIGHTHOUSES</p>
           <h1>マイ灯台</h1>
-          <p>行きたい灯台と、訪れた灯台をこの端末に残せます。</p>
+          <p>行きたい灯台と旅のメモを管理します。現地で獲得したGPSチェックイン記録はスタンプ帳に残ります。</p>
         </div>
       </header>
       <div className="shell my-lighthouses__content">

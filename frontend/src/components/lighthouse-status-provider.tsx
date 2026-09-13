@@ -9,11 +9,18 @@ export interface VisitRecord {
   note: string;
 }
 
+export interface StampRecord {
+  obtainedAt: string;
+  distanceM: number;
+  accuracyM: number;
+}
+
 export interface StoredStatus {
-  version: 2;
+  version: 3;
   favorites: string[];
   visited: string[];
   visits: Record<string, VisitRecord>;
+  stamps: Record<string, StampRecord>;
 }
 type StatusListKey = "favorites" | "visited";
 
@@ -23,10 +30,11 @@ interface LighthouseStatusContextValue extends StoredStatus {
   toggleFavorite: (slug: string) => void;
   toggleVisited: (slug: string) => void;
   updateVisit: (slug: string, visit: VisitRecord) => void;
+  obtainStamp: (slug: string, stamp: StampRecord) => boolean;
   replaceStatus: (status: StoredStatus) => void;
 }
 
-const emptyStatus: StoredStatus = { version: 2, favorites: [], visited: [], visits: {} };
+const emptyStatus: StoredStatus = { version: 3, favorites: [], visited: [], visits: {}, stamps: {} };
 const LighthouseStatusContext = createContext<LighthouseStatusContextValue>({
   ...emptyStatus,
   ready: false,
@@ -34,6 +42,7 @@ const LighthouseStatusContext = createContext<LighthouseStatusContextValue>({
   toggleFavorite: () => undefined,
   toggleVisited: () => undefined,
   updateVisit: () => undefined,
+  obtainStamp: () => false,
   replaceStatus: () => undefined,
 });
 
@@ -45,6 +54,18 @@ function validVisitRecord(value: unknown): VisitRecord {
   };
 }
 
+function validStampRecord(value: unknown): StampRecord | null {
+  const record = value && typeof value === "object" ? value as Partial<StampRecord> : {};
+  if (typeof record.obtainedAt !== "string" || Number.isNaN(Date.parse(record.obtainedAt))) return null;
+  if (typeof record.distanceM !== "number" || !Number.isFinite(record.distanceM) || record.distanceM < 0) return null;
+  if (typeof record.accuracyM !== "number" || !Number.isFinite(record.accuracyM) || record.accuracyM < 0) return null;
+  return {
+    obtainedAt: record.obtainedAt,
+    distanceM: Math.round(record.distanceM),
+    accuracyM: Math.round(record.accuracyM),
+  };
+}
+
 export function parseStoredStatus(value: string | null): StoredStatus {
   if (!value) return emptyStatus;
   try {
@@ -53,13 +74,29 @@ export function parseStoredStatus(value: string | null): StoredStatus {
       ? [...new Set(items.filter((item): item is string => typeof item === "string" && item.length <= 80))]
       : [];
     const favorites = strings(parsed.favorites).slice(0, 250);
-    const visited = strings(parsed.visited).slice(0, 250);
+    const sourceStamps = parsed.stamps && typeof parsed.stamps === "object" ? parsed.stamps : {};
+    const stamps = Object.fromEntries(Object.entries(sourceStamps).flatMap(([slug, stamp]) => {
+      const valid = validStampRecord(stamp);
+      return valid && slug.length <= 80 ? [[slug, valid]] : [];
+    }).slice(0, 250));
+    const visited = [...new Set([...strings(parsed.visited), ...Object.keys(stamps)])].slice(0, 250);
     const sourceVisits = parsed.visits && typeof parsed.visits === "object" ? parsed.visits : {};
-    const visits = Object.fromEntries(visited.map((slug) => [slug, validVisitRecord(sourceVisits[slug])]));
-    return { version: 2, favorites, visited, visits };
+    const visits = Object.fromEntries(visited.map((slug) => {
+      const fallbackDate = stamps[slug] ? localDate(new Date(stamps[slug].obtainedAt)) : "";
+      const visit = validVisitRecord(sourceVisits[slug]);
+      return [slug, visit.date || visit.note ? visit : { date: fallbackDate, note: "" }];
+    }));
+    return { version: 3, favorites, visited, visits, stamps };
   } catch {
     return emptyStatus;
   }
+}
+
+function localDate(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 export function LighthouseStatusProvider({ children }: { children: React.ReactNode }) {
@@ -90,6 +127,9 @@ export function LighthouseStatusProvider({ children }: { children: React.ReactNo
 
   const update = useCallback((key: StatusListKey, slug: string) => {
     setStatus((current) => {
+      // A GPS-earned stamp is the stronger record: it must not be removed by
+      // the lightweight manual "visit memo" toggle.
+      if (key === "visited" && current.stamps[slug]) return current;
       const values = current[key].includes(slug)
         ? current[key].filter((value) => value !== slug)
         : [...current[key], slug];
@@ -134,6 +174,30 @@ export function LighthouseStatusProvider({ children }: { children: React.ReactNo
     });
   }, []);
 
+  const obtainStamp = useCallback((slug: string, stamp: StampRecord) => {
+    const valid = validStampRecord(stamp);
+    if (!valid) return false;
+    if (status.stamps[slug]) return true;
+    const next = {
+      ...status,
+      visited: status.visited.includes(slug) ? status.visited : [...status.visited, slug],
+      visits: status.visits[slug] ? status.visits : {
+        ...status.visits,
+        [slug]: { date: localDate(new Date(valid.obtainedAt)), note: "" },
+      },
+      stamps: { ...status.stamps, [slug]: valid },
+    };
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      setStatus(next);
+      setStorageError(false);
+      return true;
+    } catch {
+      setStorageError(true);
+      return false;
+    }
+  }, [status]);
+
   const value = useMemo<LighthouseStatusContextValue>(() => ({
     ...status,
     ready,
@@ -141,8 +205,9 @@ export function LighthouseStatusProvider({ children }: { children: React.ReactNo
     toggleFavorite: (slug) => update("favorites", slug),
     toggleVisited: (slug) => update("visited", slug),
     updateVisit,
+    obtainStamp,
     replaceStatus: persist,
-  }), [persist, ready, status, storageError, update, updateVisit]);
+  }), [obtainStamp, persist, ready, status, storageError, update, updateVisit]);
 
   return <LighthouseStatusContext.Provider value={value}>
     {children}

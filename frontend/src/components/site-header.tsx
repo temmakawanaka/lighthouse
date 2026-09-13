@@ -30,6 +30,10 @@ export function SiteHeader() {
             旅程
             <span aria-hidden="true">↗</span>
           </Link>
+          <Link className="header-link" href="/stamps/">
+            スタンプ帳
+            <span aria-hidden="true">印</span>
+          </Link>
           <Link className="header-link" href="/my-lighthouses/">
             マイ灯台
             <span aria-hidden="true">☆</span>
