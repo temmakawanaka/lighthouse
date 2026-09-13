@@ -18,7 +18,7 @@ npm run test:static
 npm run preview:static
 ```
 
-`out/` に一覧・全16基の詳細・404・JavaScript・CSS・写真が生成される。プレビューは `http://127.0.0.1:3000`。静的版はブラウザで検索を行い、条件はURLに残る。JavaScript無効時も初期一覧と詳細を読めるが、条件変更にはJavaScriptが必要。
+`out/` に一覧・全52基の詳細・404・JavaScript・CSS・写真が生成される。プレビューは `http://127.0.0.1:3000`。静的版はブラウザで検索を行い、条件はURLに残る。JavaScript無効時も初期一覧と詳細を読めるが、条件変更にはJavaScriptが必要。
 
 `build:static` は環境変数のAPI接続先にかかわらず同梱データを利用する。通常の `build` はサーバー版で、`LIGHTHOUSE_DATA_SOURCE=api` と `LIGHTHOUSE_API_BASE_URL` による従来のAPI接続も維持する。両モードは同じ `.next/` を使用するため並行ビルドしない。
 
@@ -43,7 +43,7 @@ aws s3 sync frontend/out/ s3://BUCKET_NAME/ --exclude '_next/static/*' --cache-c
 aws cloudfront create-invalidation --distribution-id DISTRIBUTION_ID --paths '/*'
 ```
 
-旧資産を消さずに配信するため、更新時に `--delete` は付けない。CloudFrontの反映後、ルート・16基の詳細直リンク・検索条件URL・存在しないURLのHTTP 404を確認する。CloudFormationのバケットは誤削除防止のためRetainを指定しているので、運用を止める際のストレージの扱いは別途判断する。
+旧資産を消さずに配信するため、更新時に `--delete` は付けない。CloudFrontの反映後、ルート・52基の詳細直リンク・検索条件URL・存在しないURLのHTTP 404を確認する。CloudFormationのバケットは誤削除防止のためRetainを指定しているので、運用を止める際のストレージの扱いは別途判断する。
 
 検索条件はブラウザで処理するため、CDNのキャッシュキーには含めない。拡張子のないURLと末尾 `/` のURLを `index.html` に補完し、存在しないURLには `/404.html` をHTTP 404で返す。すべてのURLをトップに返すSPA用の200リライトは設定しない。
 

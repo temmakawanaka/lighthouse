@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
@@ -8,6 +7,7 @@ import { catalog } from "@/lib/catalog";
 import { formatLocation } from "@/lib/format";
 import { emptyTripPlan, googleMapsRouteUrl, MAX_TRIP_STOPS, parseSharedTrip, parseTripPlan, routeDistanceKm, sharedTripQuery, TRIP_STORAGE_KEY, type TripPlan } from "@/lib/trip-plan";
 import { useLighthouseStatus } from "./lighthouse-status-provider";
+import { LighthousePhoto } from "./lighthouse-photo";
 
 const validSlugs = new Set(catalog.map(({ slug }) => slug));
 
@@ -137,9 +137,8 @@ export function TripPlanner() {
           <ul className="trip-candidate-list">
             {candidates.map((lighthouse) => {
               const chosen = plan.stops.includes(lighthouse.slug);
-              const imageSource = lighthouse.slug === "omaesaki" ? "/images/thumbs/omaezaki-lighthouse-alpsdake.webp" : `/images/thumbs/${lighthouse.slug}.webp`;
               return <li key={lighthouse.slug}>
-                <Image src={imageSource} alt="" width={96} height={72} unoptimized />
+                <LighthousePhoto lighthouse={lighthouse} compact />
                 <div><strong>{lighthouse.name}</strong><span>{formatLocation(lighthouse.prefecture, lighthouse.municipality)}</span>{favorites.includes(lighthouse.slug) && <small>★ 行きたい登録済み</small>}</div>
                 <button type="button" aria-label={`${lighthouse.name}を旅程に${chosen ? "追加済み" : "追加"}`} aria-pressed={chosen} disabled={!chosen && plan.stops.length >= MAX_TRIP_STOPS} onClick={() => toggleStop(lighthouse.slug)}>
                   {chosen ? "選択済み" : "追加"}

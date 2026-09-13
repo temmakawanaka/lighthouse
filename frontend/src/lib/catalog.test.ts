@@ -3,14 +3,20 @@ import { catalog, getCatalogLighthouse, searchCatalog } from "./catalog";
 import { parseListQuery } from "./query-params";
 import reviews from "@/data/visit-reviews.json";
 import { PAGE_SIZE } from "./constants";
+import { LIGHTHOUSE_50_SLUGS } from "@/data/lighthouse-50";
 
 describe("bundled lighthouse directory", () => {
   it("contains the 16 climbable and additional sourced records with unique slugs", () => {
-    expect(catalog.length).toBeGreaterThan(16);
+    expect(catalog).toHaveLength(52);
     expect(catalog.filter((record) => record.is_visitable)).toHaveLength(16);
+    expect(catalog.filter((record) => record.gps_check_in_available !== false)).toHaveLength(45);
+    expect(catalog.filter((record) => record.gps_check_in_available === false && record.gps_check_in_note)).toHaveLength(7);
     expect(new Set(catalog.map((record) => record.slug)).size).toBe(catalog.length);
+    expect(catalog.filter((record) => record.selections.includes("日本の灯台50選")).map(({ slug }) => slug).sort())
+      .toEqual([...LIGHTHOUSE_50_SLUGS].sort());
     for (const record of catalog) {
       expect(getCatalogLighthouse(record.slug)).toEqual(record);
+      expect(record.source_urls.length).toBeGreaterThan(0);
       const review = reviews[record.slug as keyof typeof reviews];
       if (record.is_visitable) {
         expect(record.source_urls).toContain(review.source_url);
