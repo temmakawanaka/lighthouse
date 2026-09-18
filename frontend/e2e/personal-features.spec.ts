@@ -40,7 +40,7 @@ test("GPSなしのテスト印を押してまとめて消せる", async ({ page 
   await page.getByRole("button", { name: "テストで押す" }).first().click();
   await expect(page.getByRole("heading", { name: "1 / 52 基" })).toBeVisible();
   await expect(page.getByText("確認用テスト印")).toBeVisible();
-  await page.getByRole("button", { name: "閉じる" }).click();
+  await page.getByRole("button", { name: "閉じる", exact: true }).click();
   await page.getByRole("button", { name: /テスト印をすべて消す/ }).click();
   await expect(page.getByRole("heading", { name: "0 / 52 基" })).toBeVisible();
 });
