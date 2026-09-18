@@ -47,7 +47,7 @@ export function UserDataTransfer() {
 
   return <section className="data-transfer" aria-labelledby="data-transfer-heading">
     <div><p className="kicker">BACKUP</p><h2 id="data-transfer-heading">記録を持ち運ぶ</h2></div>
-    <p>行きたい灯台、訪問記録、旅程を1つのファイルに保存できます。機種変更時の移行にも使えます。</p>
+    <p>行きたい灯台、獲得スタンプ、旅程を1つのファイルに保存できます。機種変更時の移行にも使えます。</p>
     <div className="data-transfer__actions">
       <button className="button button--secondary" type="button" onClick={download}>バックアップを書き出す</button>
       <label className="button button--quiet">バックアップを復元

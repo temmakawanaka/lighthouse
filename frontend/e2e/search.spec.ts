@@ -11,8 +11,7 @@ async function expectQuery(page: Page, expected: Record<string, string | null>) 
     .toEqual(expected);
 }
 
-// Cards intentionally expose both "行きたい" and "訪問メモ" controls. Allow
-// enough tab stops to traverse a full 12-card result page before pagination.
+// Allow enough tab stops to traverse a full 12-card result page before pagination.
 async function tabTo(page: Page, locator: Locator, maxTabs = 80) {
   for (let index = 0; index < maxTabs; index += 1) {
     await page.keyboard.press("Tab");

@@ -14,7 +14,8 @@ describe("LighthouseCard", () => {
     expect(screen.getByText("登れる灯台")).toBeInTheDocument();
     expect(screen.getByText("初点灯 1874年")).toBeInTheDocument();
     expect(screen.getByText("01")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /灯台の記録を見る/ })).toHaveAttribute(
+    expect(screen.getByRole("button", { name: "犬吠埼灯台を行きたいに追加" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /灯台の詳細を見る/ })).toHaveAttribute(
       "href",
       "/lighthouses/inubosaki",
     );

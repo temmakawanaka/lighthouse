@@ -1,5 +1,5 @@
 import { spawnSync } from "node:child_process";
-import { readFile, writeFile } from "node:fs/promises";
+import { readFile, rm, writeFile } from "node:fs/promises";
 
 const pageUrl = new URL("../src/app/lighthouses/[slug]/page.tsx", import.meta.url);
 const dynamicMode = 'export const dynamic = "force-dynamic";';
@@ -12,6 +12,8 @@ if (!originalPage.includes(dynamicMode)) {
 
 let status = 1;
 try {
+  await rm(new URL("../.next/", import.meta.url), { recursive: true, force: true });
+  await rm(new URL("../out/", import.meta.url), { recursive: true, force: true });
   await writeFile(pageUrl, originalPage.replace(dynamicMode, staticMode));
   const result = spawnSync(process.execPath, ["node_modules/next/dist/bin/next", "build"], {
     stdio: "inherit",

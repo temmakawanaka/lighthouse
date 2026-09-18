@@ -8,6 +8,7 @@ import { PAGE_SIZE } from "@/lib/constants";
 import { catalog } from "@/lib/catalog";
 import { buildPageHref, type ListQuery } from "@/lib/query-params";
 import type { LighthouseListResponse } from "@/types/lighthouse";
+import Link from "next/link";
 
 export function LighthouseDirectory({ query, result }: { query: ListQuery; result: LighthouseListResponse }) {
   const href = buildPageHref(query, query.page);
@@ -26,7 +27,7 @@ export function LighthouseDirectory({ query, result }: { query: ListQuery; resul
               </div>
               <p className="directory-edition">収録 {catalog.length}基｜のぼれる灯台16＋日本の灯台50選</p>
             </div>
-            <div className="rally-shortcuts"><a className="rally-shortcuts__primary" href="/map/"><strong>GPSマップを開く</strong><span>現在地と灯台ピンを見る →</span></a><a href="/stamps/"><strong>スタンプ帳</strong><span>獲得状況を見る →</span></a></div>
+            <div className="rally-shortcuts"><Link className="rally-shortcuts__primary" href="/map/"><strong>GPSマップを開く</strong><span>現在地と灯台ピンを見る →</span></Link><Link href="/stamps/"><strong>スタンプ帳</strong><span>獲得状況を見る →</span></Link></div>
             <SearchFilterForm />
           </div>
         </section>

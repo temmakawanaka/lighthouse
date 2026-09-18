@@ -52,6 +52,12 @@ export interface Lighthouse {
   visit_notice?: string | null;
   gps_check_in_available?: boolean;
   gps_check_in_note?: string | null;
+  check_in_type?: "onsite" | "viewpoint";
+  check_in_latitude?: string;
+  check_in_longitude?: string;
+  check_in_radius_m?: number;
+  check_in_location_name?: string;
+  check_in_source_url?: string;
 }
 
 export interface LighthouseListResponse {

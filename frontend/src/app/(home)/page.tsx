@@ -9,10 +9,11 @@ import { searchCatalog } from "@/lib/catalog";
 import { usesCatalog } from "@/lib/data-source";
 import { PAGE_SIZE } from "@/lib/constants";
 import { buildPageHref, parseListQuery, type RawSearchParams } from "@/lib/query-params";
+import { siteUrl } from "@/lib/site-path";
 
 type HomePageProps = { searchParams: Promise<RawSearchParams> };
 
-export const metadata: Metadata = { alternates: { canonical: "/" } };
+export const metadata: Metadata = { alternates: { canonical: siteUrl("/") } };
 
 export default async function HomePage({ searchParams }: HomePageProps) {
   // Server deployments may select their data source at runtime; exports are fully static.

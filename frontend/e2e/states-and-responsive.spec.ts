@@ -40,9 +40,32 @@ test("代表的な画面幅で主要要素が表示され、横スクロール�
   }
 });
 
+test("スマートフォン幅でヘッダーとスタンプ進捗が重ならない", async ({ page }) => {
+  await page.goto("/stamps/");
+  await expect(page.getByRole("heading", { name: "0 / 52 基" })).toBeVisible();
+  await expectNoHorizontalScroll(page);
+
+  const viewport = page.viewportSize();
+  if (!viewport) throw new Error("Viewport is not configured");
+
+  const navigation = viewport.width <= 640 ? page.locator(".mobile-nav a") : page.locator(".header-nav .header-link");
+  for (const link of await navigation.all()) {
+    const box = await link.boundingBox();
+    if (!box) throw new Error("Navigation link is not visible");
+    expect(box.x).toBeGreaterThanOrEqual(0);
+    expect(box.x + box.width).toBeLessThanOrEqual(viewport.width + 1);
+    expect(box.height).toBeLessThanOrEqual(48);
+  }
+
+  const copy = await page.locator(".stamp-progress > div:first-child").boundingBox();
+  const ring = await page.locator(".stamp-progress__rings").boundingBox();
+  if (!copy || !ring) throw new Error("Stamp progress is not visible");
+  if (viewport.width <= 640) expect(ring.y).toBeGreaterThanOrEqual(copy.y + copy.height - 1);
+});
+
 test("カードから正常な詳細画面へ移動できる", async ({ page }) => {
   await page.goto("/?q=犬吠");
-  await page.getByRole("link", { name: /灯台の記録を見る/ }).click();
+  await page.getByRole("link", { name: /灯台の詳細を見る/ }).click();
 
   await expect(page).toHaveURL(/\/lighthouses\/inubosaki\?from=/);
   await expect(page.getByRole("heading", { name: "犬吠埼灯台", level: 1 })).toBeVisible();

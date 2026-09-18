@@ -49,10 +49,10 @@ export function JapanLighthouseMap() {
             if (!active) return <path className="japan-map__prefecture" d={location.path} key={location.id} aria-hidden="true" />;
             const label = `${active.prefecture}、灯台${active.records.length}基を一覧で見る`;
             return (
-              <a className="japan-map__link" href={`/?prefecture=${encodeURIComponent(active.prefecture)}`}
+              <Link className="japan-map__link" href={`/?prefecture=${encodeURIComponent(active.prefecture)}`}
                 aria-label={label} key={location.id}>
                 <path d={location.path}><title>{label}</title></path>
-              </a>
+              </Link>
             );
           })}
         </svg>

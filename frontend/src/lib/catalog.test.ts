@@ -9,8 +9,8 @@ describe("bundled lighthouse directory", () => {
   it("contains the 16 climbable and additional sourced records with unique slugs", () => {
     expect(catalog).toHaveLength(52);
     expect(catalog.filter((record) => record.is_visitable)).toHaveLength(16);
-    expect(catalog.filter((record) => record.gps_check_in_available !== false)).toHaveLength(45);
-    expect(catalog.filter((record) => record.gps_check_in_available === false && record.gps_check_in_note)).toHaveLength(7);
+    expect(catalog.filter((record) => record.gps_check_in_available !== false)).toHaveLength(52);
+    expect(catalog.filter((record) => record.check_in_type === "viewpoint" && record.gps_check_in_note)).toHaveLength(7);
     expect(new Set(catalog.map((record) => record.slug)).size).toBe(catalog.length);
     expect(catalog.filter((record) => record.selections.includes("日本の灯台50選")).map(({ slug }) => slug).sort())
       .toEqual([...LIGHTHOUSE_50_SLUGS].sort());

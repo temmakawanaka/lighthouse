@@ -1,5 +1,7 @@
-const CACHE = "lighthouse-field-guide-v5";
-const APP_SHELL = ["/", "/map/", "/stamps/", "/trip/", "/my-lighthouses/", "/manifest.webmanifest", "/icon.svg", "/icon-192.png", "/icon-512.png"];
+const CACHE = "lighthouse-field-guide-v20";
+const BASE_PATH = new URL(self.registration.scope).pathname.replace(/\/$/, "");
+const scoped = (path) => `${BASE_PATH}${path}`;
+const APP_SHELL = ["/", "/map/", "/stamps/", "/trip/", "/my-lighthouses/", "/manifest.webmanifest", "/icon.svg", "/icon-192.png", "/icon-512.png"].map(scoped);
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(APP_SHELL)));
@@ -23,13 +25,13 @@ self.addEventListener("fetch", (event) => {
         if (response.ok) await (await caches.open(CACHE)).put(request, response.clone());
         return response;
       } catch {
-        return await caches.match(request) || await caches.match("/") || Response.error();
+        return await caches.match(request) || await caches.match(scoped("/")) || Response.error();
       }
     })());
     return;
   }
 
-  if (url.pathname.startsWith("/_next/static/")) {
+  if (url.pathname.startsWith(scoped("/_next/static/"))) {
     event.respondWith((async () => {
       const cached = await caches.match(request);
       if (cached) return cached;

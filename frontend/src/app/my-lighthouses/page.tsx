@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
+import { siteUrl } from "@/lib/site-path";
 import { MyLighthouses } from "@/components/my-lighthouses";
 
 export const metadata: Metadata = {
   title: "マイ灯台",
-  description: "行きたい灯台と、自分で残した訪問メモをこの端末で管理できます。",
-  alternates: { canonical: "/my-lighthouses/" },
+  description: "行きたい灯台と、GPSで獲得した灯台スタンプをこの端末で管理できます。",
+  alternates: { canonical: siteUrl("/my-lighthouses/") },
   robots: { index: false, follow: true },
 };
 
@@ -15,7 +16,7 @@ export default function MyLighthousesPage() {
         <div className="shell">
           <p className="kicker">MY LIGHTHOUSES</p>
           <h1>マイ灯台</h1>
-          <p>行きたい灯台と旅のメモを管理します。現地で獲得したGPSチェックイン記録はスタンプ帳に残ります。</p>
+          <p>行きたい灯台を保存し、現地で獲得したスタンプを確認できます。</p>
         </div>
       </header>
       <div className="shell my-lighthouses__content">

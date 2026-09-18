@@ -148,7 +148,7 @@ export function TripPlanner() {
           </ul>
         </section>
       </div>
-      <p className="trip-storage-note">旅程はこのブラウザだけに保存されます。共有URLには灯台名と予定日だけが含まれ、訪問メモは含まれません。</p>
+      <p className="trip-storage-note">旅程はこのブラウザだけに保存されます。共有URLに含まれるのは灯台名と予定日だけです。</p>
       <p className="sr-only" aria-live="polite">{announcement}</p>
       <div className="trip-back-links"><Link className="button button--secondary" href="/map/">地図から選び直す</Link><Link className="text-link" href="/my-lighthouses/">マイ灯台を見る →</Link></div>
     </>

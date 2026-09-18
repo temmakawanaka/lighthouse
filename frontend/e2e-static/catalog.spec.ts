@@ -41,7 +41,7 @@ test("現地のGPSチェックインでスタンプを獲得できる", async ({
   await page.getByRole("button", { name: "GPSでチェックイン" }).click();
   await expect(page.getByText(/スタンプを獲得しました/)).toBeVisible();
   await page.goto("/stamps/");
-  await expect(page.getByRole("heading", { name: "1 / 45 基" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "1 / 52 基" })).toBeVisible();
   await expect(page.locator(".stamp-slot--earned")).toHaveCount(1);
 });
 

@@ -46,8 +46,8 @@ try {
     const response = await fetch(origin + path);
     assert.equal(response.status, 200, path);
     const html = await response.text();
-    assert(html.includes("現地でスタンプを獲得") || html.includes("安全なチェックイン地点を準備中"), path);
-    assert(html.includes("ここへの経路を調べる"), path);
+    assert(html.includes("現地でスタンプを獲得") || html.includes("安全な遠望地点でスタンプを獲得"), path);
+    assert(html.includes("ここへの経路を調べる") || html.includes("遠望地点への経路"), path);
   }
   const featured = await fetch(origin + "/lighthouses/soyamisaki/");
   assert.equal(featured.status, 200);
