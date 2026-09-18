@@ -36,16 +36,18 @@ export function LighthouseCard({ lighthouse, sequence, returnHref = "/" }: Light
           </span>
           {lighthouse.is_visitable && <span className="badge badge--warm">登れる灯台</span>}
         </div>
-        <h2>{lighthouse.name}</h2>
+        <div className="lighthouse-card__title-row">
+          <h2>{lighthouse.name}</h2>
+          <LighthouseStatusActions slug={lighthouse.slug} name={lighthouse.name} compact />
+        </div>
         {lighthouse.english_name && <p className="english-name">{lighthouse.english_name}</p>}
         <p className="card-description">
           {lighthouse.description ?? "灯台の詳しい情報を確認できます。"}
         </p>
-        <LighthouseStatusActions slug={lighthouse.slug} name={lighthouse.name} compact />
         <div className="lighthouse-card__footer">
           <span>{year ? `初点灯 ${year}` : "初点灯年 調査中"}</span>
-          <Link className="text-link" aria-label={`${lighthouse.name}の記録を見る`} href={`/lighthouses/${lighthouse.slug}${returnHref === "/" ? "" : `?from=${encodeURIComponent(returnHref)}`}`}>
-            灯台の記録を見る
+          <Link className="text-link" aria-label={`${lighthouse.name}の詳細を見る`} href={`/lighthouses/${lighthouse.slug}${returnHref === "/" ? "" : `?from=${encodeURIComponent(returnHref)}`}`}>
+            灯台の詳細を見る
             <span aria-hidden="true">→</span>
           </Link>
         </div>

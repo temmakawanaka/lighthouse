@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
+import { siteUrl } from "@/lib/site-path";
 import { StampBook } from "@/components/stamp-book";
 
 export const metadata: Metadata = {
   title: "灯台スタンプ帳",
   description: "現地のGPSチェックインで獲得した灯台スタンプを一覧できます。",
-  alternates: { canonical: "/stamps/" },
+  alternates: { canonical: siteUrl("/stamps/") },
   robots: { index: false, follow: true },
 };
 

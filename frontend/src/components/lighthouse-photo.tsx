@@ -1,6 +1,7 @@
 import Image from "next/image";
 import photoSources from "@/data/photo-sources.json";
 import type { Lighthouse } from "@/types/lighthouse";
+import { sitePath } from "@/lib/site-path";
 import { LighthouseVisual } from "./lighthouse-visual";
 
 export function LighthousePhoto({ lighthouse, compact = false }: { lighthouse: Lighthouse; compact?: boolean }) {
@@ -8,8 +9,8 @@ export function LighthousePhoto({ lighthouse, compact = false }: { lighthouse: L
 
   if (!photo) return <LighthouseVisual visualId={lighthouse.slug} label={`${lighthouse.name}のイメージ図版`} />;
   const filename = lighthouse.slug === "omaesaki" ? "omaezaki-lighthouse-alpsdake" : lighthouse.slug;
-  const imageSource = `/images/${filename}.webp`;
-  const thumbnailSource = `/images/thumbs/${filename}.webp`;
+  const imageSource = sitePath(`/images/${filename}.webp`);
+  const thumbnailSource = sitePath(`/images/thumbs/${filename}.webp`);
 
   return <figure className={`lighthouse-photo${compact ? " lighthouse-photo--compact" : ""}`}>
     <Image src={compact ? thumbnailSource : imageSource} alt={photo.alt}

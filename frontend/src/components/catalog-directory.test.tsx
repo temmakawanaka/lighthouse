@@ -16,7 +16,7 @@ describe("static directory URL state", () => {
     navigation.query = "q=御前崎&prefecture=静岡県";
     render(<CatalogDirectory />);
     expect(screen.getByRole("heading", { name: "灯台一覧 1件" })).toBeInTheDocument();
-    const link = screen.getByRole("link", { name: /灯台の記録を見る/ });
+    const link = screen.getByRole("link", { name: /灯台の詳細を見る/ });
     const url = new URL(link.getAttribute("href")!, "https://example.test");
     const back = new URL(url.searchParams.get("from")!, "https://example.test");
     expect(back.searchParams.get("q")).toBe("御前崎");

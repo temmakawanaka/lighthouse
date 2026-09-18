@@ -10,13 +10,28 @@ export interface CheckInPosition {
   accuracy: number;
 }
 
-export function evaluateCheckIn(position: CheckInPosition, lighthouse: Pick<Lighthouse, "latitude" | "longitude">) {
+type CheckInLighthouse = Pick<Lighthouse, "latitude" | "longitude" | "check_in_type" | "check_in_latitude" | "check_in_longitude" | "check_in_radius_m" | "check_in_location_name" | "check_in_source_url">;
+
+export function getCheckInTarget(lighthouse: CheckInLighthouse) {
+  const kind = lighthouse.check_in_type ?? "onsite";
+  return {
+    kind,
+    latitude: lighthouse.check_in_latitude ?? lighthouse.latitude,
+    longitude: lighthouse.check_in_longitude ?? lighthouse.longitude,
+    radiusM: lighthouse.check_in_radius_m ?? CHECK_IN_RADIUS_M,
+    locationName: lighthouse.check_in_location_name ?? (kind === "viewpoint" ? "安全な遠望地点" : "灯台周辺"),
+    sourceUrl: lighthouse.check_in_source_url,
+  } as const;
+}
+
+export function evaluateCheckIn(position: CheckInPosition, lighthouse: CheckInLighthouse) {
+  const target = getCheckInTarget(lighthouse);
   const distanceM = distanceKm(
     { latitude: String(position.latitude), longitude: String(position.longitude) },
-    lighthouse,
+    target,
   ) * 1000;
   const accuracyM = Math.max(0, position.accuracy);
-  const allowedRadiusM = CHECK_IN_RADIUS_M + Math.min(accuracyM, MAX_ACCURACY_ALLOWANCE_M);
+  const allowedRadiusM = target.radiusM + Math.min(accuracyM, MAX_ACCURACY_ALLOWANCE_M);
   const accuracySufficient = accuracyM <= MAX_ACCURACY_ALLOWANCE_M;
   return {
     distanceM,
@@ -24,5 +39,6 @@ export function evaluateCheckIn(position: CheckInPosition, lighthouse: Pick<Ligh
     allowedRadiusM,
     accuracySufficient,
     eligible: accuracySufficient && distanceM <= allowedRadiusM,
+    target,
   };
 }

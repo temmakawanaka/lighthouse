@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { siteUrl } from "@/lib/site-path";
 import Link from "next/link";
 import { connection } from "next/server";
 import { catalog } from "@/lib/catalog";
@@ -10,6 +11,7 @@ import { LighthouseStatusActions } from "@/components/lighthouse-status-actions"
 import { GpsCheckIn } from "@/components/gps-check-in";
 import { NearbyLighthouses } from "@/components/nearby-lighthouses";
 import { officialVisitUrl, directionsUrl } from "@/lib/visit-links";
+import { getCheckInTarget } from "@/lib/check-in";
 import {
   formatDate,
   formatLocation,
@@ -41,7 +43,7 @@ export async function generateMetadata({ params }: LighthouseDetailPageProps): P
   return {
     title: lighthouse.name,
     description: lighthouse.description ?? `${lighthouse.name}の所在地・歴史・参観情報。`,
-    alternates: { canonical: `/lighthouses/${lighthouse.slug}/` },
+    alternates: { canonical: siteUrl(`/lighthouses/${lighthouse.slug}/`) },
   };
 }
 
@@ -51,8 +53,10 @@ export default async function LighthouseDetailPage({ params }: LighthouseDetailP
   const lighthouse = await loadLighthouse(slug);
   const location = formatLocation(lighthouse.prefecture, lighthouse.municipality);
   const officialUrl = officialVisitUrl(lighthouse.source_urls);
+  const checkInTarget = getCheckInTarget(lighthouse);
+  const routeTarget = checkInTarget.kind === "viewpoint" ? checkInTarget : lighthouse;
   const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-    `${lighthouse.latitude},${lighthouse.longitude}`,
+    `${routeTarget.latitude},${routeTarget.longitude}`,
   )}`;
 
   const basicItems = [
@@ -148,7 +152,7 @@ export default async function LighthouseDetailPage({ params }: LighthouseDetailP
               </dl>
               <div className="visit-actions">
                 {officialUrl && <a className="button button--primary" href={officialUrl} target="_blank" rel="noreferrer">公式の参観案内 <span aria-hidden="true">↗</span><span className="sr-only">（新しいタブで開きます）</span></a>}
-                <a className="button button--secondary" href={directionsUrl(lighthouse)} target="_blank" rel="noreferrer">ここへの経路を調べる <span aria-hidden="true">↗</span><span className="sr-only">（新しいタブで開きます）</span></a>
+                <a className="button button--secondary" href={directionsUrl(routeTarget)} target="_blank" rel="noreferrer">{checkInTarget.kind === "viewpoint" ? "遠望地点への経路" : "ここへの経路を調べる"} <span aria-hidden="true">↗</span><span className="sr-only">（新しいタブで開きます）</span></a>
               </div>
               <LighthouseStatusActions slug={lighthouse.slug} name={lighthouse.name} />
             </div>
@@ -207,7 +211,7 @@ export default async function LighthouseDetailPage({ params }: LighthouseDetailP
                   target="_blank"
                   rel="noreferrer"
                 >
-                  Google Mapsで開く
+                  {checkInTarget.kind === "viewpoint" ? "遠望地点をGoogle Mapsで開く" : "Google Mapsで開く"}
                   <span className="external-mark" aria-hidden="true">↗</span>
                   <span className="sr-only">（新しいタブで開きます）</span>
                 </a>

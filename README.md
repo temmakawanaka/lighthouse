@@ -98,6 +98,11 @@ npm run preview:static
 
 `test:static` は52基の詳細ページ、アセット、404応答、情報確認日を検証します。静的出力は `frontend/out` に生成されます。ルートで `npm run build` を実行すると、ホスティング用の `out` へまとめます。
 
+GitHub Pages版は `.github/workflows/pages.yml` が `main` 更新時に自動公開します。プロジェクトサイト用の `/lighthouse/` をビルド時だけ付加するため、ルートパスで配信するChatGPT Sites版と同じソースを併用できます。
+
+- ChatGPT Sites: https://lighthouse-field-guide.colet3020.chatgpt.site/
+- GitHub Pages: https://temmakawanaka.github.io/lighthouse/
+
 ## 画面
 
 - `/`: 灯台一覧、検索、都道府県・参観可否による絞り込み、並び替え、ページング

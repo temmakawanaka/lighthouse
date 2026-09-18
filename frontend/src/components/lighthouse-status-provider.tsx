@@ -3,6 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 const STORAGE_KEY = "lighthouse-field-guide:user-state:v1";
+const TEST_MODE_KEY = "lighthouse-field-guide:test-mode:v1";
 
 export interface VisitRecord {
   date: string;
@@ -13,6 +14,8 @@ export interface StampRecord {
   obtainedAt: string;
   distanceM: number;
   accuracyM: number;
+  source?: "test";
+  addedVisit?: boolean;
 }
 
 export interface StoredStatus {
@@ -27,10 +30,14 @@ type StatusListKey = "favorites" | "visited";
 interface LighthouseStatusContextValue extends StoredStatus {
   ready: boolean;
   storageError: boolean;
+  testMode: boolean;
   toggleFavorite: (slug: string) => void;
   toggleVisited: (slug: string) => void;
   updateVisit: (slug: string, visit: VisitRecord) => void;
   obtainStamp: (slug: string, stamp: StampRecord) => boolean;
+  obtainTestStamp: (slug: string) => boolean;
+  clearTestStamps: () => void;
+  setTestMode: (enabled: boolean) => void;
   replaceStatus: (status: StoredStatus) => void;
 }
 
@@ -39,10 +46,14 @@ const LighthouseStatusContext = createContext<LighthouseStatusContextValue>({
   ...emptyStatus,
   ready: false,
   storageError: false,
+  testMode: false,
   toggleFavorite: () => undefined,
   toggleVisited: () => undefined,
   updateVisit: () => undefined,
   obtainStamp: () => false,
+  obtainTestStamp: () => false,
+  clearTestStamps: () => undefined,
+  setTestMode: () => undefined,
   replaceStatus: () => undefined,
 });
 
@@ -63,6 +74,8 @@ function validStampRecord(value: unknown): StampRecord | null {
     obtainedAt: record.obtainedAt,
     distanceM: Math.round(record.distanceM),
     accuracyM: Math.round(record.accuracyM),
+    ...(record.source === "test" ? { source: "test" as const } : {}),
+    ...(record.source === "test" && record.addedVisit === true ? { addedVisit: true } : {}),
   };
 }
 
@@ -103,6 +116,7 @@ export function LighthouseStatusProvider({ children }: { children: React.ReactNo
   const [status, setStatus] = useState<StoredStatus>(emptyStatus);
   const [ready, setReady] = useState(false);
   const [storageError, setStorageError] = useState(false);
+  const [testMode, setTestModeState] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -110,6 +124,7 @@ export function LighthouseStatusProvider({ children }: { children: React.ReactNo
       if (!active) return;
       try {
         setStatus(parseStoredStatus(window.localStorage.getItem(STORAGE_KEY)));
+        setTestModeState(window.localStorage.getItem(TEST_MODE_KEY) === "true");
       } catch {
         setStatus(emptyStatus);
       }
@@ -117,6 +132,7 @@ export function LighthouseStatusProvider({ children }: { children: React.ReactNo
     });
     const synchronize = (event: StorageEvent) => {
       if (event.key === STORAGE_KEY) setStatus(parseStoredStatus(event.newValue));
+      if (event.key === TEST_MODE_KEY) setTestModeState(event.newValue === "true");
     };
     window.addEventListener("storage", synchronize);
     return () => {
@@ -198,16 +214,66 @@ export function LighthouseStatusProvider({ children }: { children: React.ReactNo
     }
   }, [status]);
 
+  const obtainTestStamp = useCallback((slug: string) => obtainStamp(slug, {
+    obtainedAt: new Date().toISOString(),
+    distanceM: 0,
+    accuracyM: 0,
+    source: "test",
+    addedVisit: !status.visited.includes(slug),
+  }), [obtainStamp, status.visited]);
+
+  const clearTestStamps = useCallback(() => {
+    setStatus((current) => {
+      const testEntries = Object.entries(current.stamps).filter(([, stamp]) => stamp.source === "test");
+      if (testEntries.length === 0) return current;
+      const removableVisits = new Set(testEntries.flatMap(([slug, stamp]) => {
+        const visit = current.visits[slug];
+        const isUntouchedAutomaticVisit = stamp.addedVisit === true
+          && visit?.note === ""
+          && visit.date === localDate(new Date(stamp.obtainedAt));
+        return isUntouchedAutomaticVisit ? [slug] : [];
+      }));
+      const next: StoredStatus = {
+        ...current,
+        stamps: Object.fromEntries(Object.entries(current.stamps).filter(([, stamp]) => stamp.source !== "test")),
+        visited: current.visited.filter((slug) => !removableVisits.has(slug)),
+        visits: Object.fromEntries(Object.entries(current.visits).filter(([slug]) => !removableVisits.has(slug))),
+      };
+      try {
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+        setStorageError(false);
+      } catch {
+        setStorageError(true);
+        return current;
+      }
+      return next;
+    });
+  }, []);
+
+  const setTestMode = useCallback((enabled: boolean) => {
+    try {
+      window.localStorage.setItem(TEST_MODE_KEY, String(enabled));
+      setTestModeState(enabled);
+      setStorageError(false);
+    } catch {
+      setStorageError(true);
+    }
+  }, []);
+
   const value = useMemo<LighthouseStatusContextValue>(() => ({
     ...status,
     ready,
     storageError,
+    testMode,
     toggleFavorite: (slug) => update("favorites", slug),
     toggleVisited: (slug) => update("visited", slug),
     updateVisit,
     obtainStamp,
+    obtainTestStamp,
+    clearTestStamps,
+    setTestMode,
     replaceStatus: persist,
-  }), [obtainStamp, persist, ready, status, storageError, update, updateVisit]);
+  }), [clearTestStamps, obtainStamp, obtainTestStamp, persist, ready, setTestMode, status, storageError, testMode, update, updateVisit]);
 
   return <LighthouseStatusContext.Provider value={value}>
     {children}
@@ -219,4 +285,4 @@ export function useLighthouseStatus() {
   return useContext(LighthouseStatusContext);
 }
 
-export { STORAGE_KEY };
+export { STORAGE_KEY, TEST_MODE_KEY };

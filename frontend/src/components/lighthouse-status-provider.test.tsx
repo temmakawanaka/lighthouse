@@ -2,7 +2,7 @@ import { act, renderHook, waitFor } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LighthouseStatusProvider, parseStoredStatus, STORAGE_KEY, useLighthouseStatus } from "./lighthouse-status-provider";
+import { LighthouseStatusProvider, parseStoredStatus, STORAGE_KEY, TEST_MODE_KEY, useLighthouseStatus } from "./lighthouse-status-provider";
 
 describe("parseStoredStatus", () => {
   it("returns an empty state for invalid input", () => {
@@ -70,5 +70,26 @@ describe("LighthouseStatusProvider", () => {
     expect(result.current.stamps).toEqual({});
     expect(result.current.storageError).toBe(true);
     setItem.mockRestore();
+  });
+
+  it("keeps test stamps identifiable and clears only their automatic visits", async () => {
+    const wrapper = ({ children }: { children: ReactNode }) => <LighthouseStatusProvider>{children}</LighthouseStatusProvider>;
+    const { result } = renderHook(() => useLighthouseStatus(), { wrapper });
+    await waitFor(() => expect(result.current.ready).toBe(true));
+
+    act(() => result.current.setTestMode(true));
+    expect(result.current.testMode).toBe(true);
+    expect(window.localStorage.getItem(TEST_MODE_KEY)).toBe("true");
+
+    act(() => result.current.updateVisit("inubosaki", { date: "2026-09-10", note: "手動の訪問記録" }));
+    act(() => result.current.obtainTestStamp("inubosaki"));
+    act(() => result.current.obtainTestStamp("omaesaki"));
+    expect(result.current.stamps.inubosaki.source).toBe("test");
+    expect(result.current.stamps.omaesaki.addedVisit).toBe(true);
+
+    act(() => result.current.clearTestStamps());
+    expect(result.current.stamps).toEqual({});
+    expect(result.current.visited).toEqual(["inubosaki"]);
+    expect(result.current.visits.inubosaki.note).toBe("手動の訪問記録");
   });
 });

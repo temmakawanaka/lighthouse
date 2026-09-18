@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { siteUrl } from "@/lib/site-path";
 import Link from "next/link";
 
 import { JapanLighthouseMap } from "@/components/japan-lighthouse-map";
@@ -8,7 +9,7 @@ import { LighthousePinMap } from "@/components/lighthouse-pin-map";
 export const metadata: Metadata = {
   title: "地図から灯台を探す",
   description: "日本各地の灯台をピン地図や現在地から探し、GPSスタンプの獲得状況を確認できます。",
-  alternates: { canonical: "/map/" },
+  alternates: { canonical: siteUrl("/map/") },
 };
 
 export default function MapPage() {
