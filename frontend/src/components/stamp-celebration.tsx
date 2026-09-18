@@ -32,7 +32,7 @@ export function StampCelebration({ lighthouse, open, onClose }: { lighthouse: Li
       <h2>スタンプ獲得！</h2>
       <p className="stamp-celebration__name">{lighthouse.name}</p>
       <p className="stamp-celebration__progress"><strong>{region}で{regionEarned}個目</strong><span>全52基中 {totalEarned}基を獲得</span></p>
-      {stamp.source === "test" && <small className="stamp-celebration__test-note">確認用のテスト印です。GPSでの訪問記録とは区別されます。</small>}
+      {stamp.source === "test" && <small className="stamp-celebration__test-note">確認用テスト印です。GPSでの訪問記録とは区別されます。</small>}
       <div className="stamp-celebration__actions"><button type="button" className="button button--secondary" onClick={() => dialogRef.current?.close()}>閉じる</button><Link className="button button--stamp" href="/stamps/">スタンプ帳を見る</Link></div>
     </div>}
   </dialog>;

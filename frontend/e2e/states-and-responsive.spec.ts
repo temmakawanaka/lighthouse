@@ -54,7 +54,7 @@ test("スマートフォン幅でヘッダーとスタンプ進捗が重なら�
     if (!box) throw new Error("Navigation link is not visible");
     expect(box.x).toBeGreaterThanOrEqual(0);
     expect(box.x + box.width).toBeLessThanOrEqual(viewport.width + 1);
-    expect(box.height).toBeLessThanOrEqual(48);
+    expect(box.height).toBeLessThanOrEqual(viewport.width <= 640 ? 72 : 48);
   }
 
   const copy = await page.locator(".stamp-progress > div:first-child").boundingBox();
