@@ -1,27 +1,27 @@
 {
   "version": 1,
-  "generated_at": "2026-09-09T13:08:31.904Z",
+  "generated_at": "2026-10-17T15:28:56.524Z",
   "pages": {
     "shiriyazaki": {
       "slug": "shiriyazaki",
       "name": "尻屋埼灯台",
       "source_url": "https://www.tokokai.org/tourlight/tourlight16/",
-      "sha256": "0e8e69bfce9cc58f67cda2f4e2f61c27de5430f25ae64d429001dbfcbe043821",
-      "normalized_length": 3174
+      "sha256": "10ac97fb751ad4006efc43104ec14b233229aa24e1e267fd85705045b27ae251",
+      "normalized_length": 3135
     },
     "nyudosaki": {
       "slug": "nyudosaki",
       "name": "入道埼灯台",
       "source_url": "https://www.tokokai.org/tourlight/tourlight01/",
-      "sha256": "e4577082997181ec9844a72ece01e41a74372591a286bbbc30b4b947996ca009",
-      "normalized_length": 2570
+      "sha256": "68b5b3c7c03b0a7b91c4a1c655d5dc95a713189b9da0e8a157c9131d825ea255",
+      "normalized_length": 2569
     },
     "shioyasaki": {
       "slug": "shioyasaki",
       "name": "塩屋埼灯台",
       "source_url": "https://www.tokokai.org/tourlight/tourlight02/",
-      "sha256": "4351371a434c48f7ff35de9fc745774aabc2e9107da2ba663cf9bb00ccc6e012",
-      "normalized_length": 2336
+      "sha256": "6c7a53c910392054a840d5653f58d8214cc29aa0f32221c5866a9363381b93c1",
+      "normalized_length": 2521
     },
     "inubosaki": {
       "slug": "inubosaki",
@@ -34,29 +34,29 @@
       "slug": "nojimasaki",
       "name": "野島埼灯台",
       "source_url": "https://www.tokokai.org/tourlight/tourlight04/",
-      "sha256": "c7138c0a4ff7676682654585adf08a29b0167e4d3f035c7ef36f84e5ee0171d8",
-      "normalized_length": 2517
+      "sha256": "b26669636f369070ca89b1460ee1a3e1d3f53d994260010685437b1a8dd0fbdf",
+      "normalized_length": 2625
     },
     "kannonzaki": {
       "slug": "kannonzaki",
       "name": "観音埼灯台",
       "source_url": "https://www.tokokai.org/tourlight/tourlight05/",
-      "sha256": "cd73929b8e20023bdde783466145466c938655c73a4dcd5d367d0ddc11f070b4",
-      "normalized_length": 2522
+      "sha256": "06290746b94e579f94fe8cce73e2a72f23487a8e45b638959b5f305c728d2eb8",
+      "normalized_length": 2662
     },
     "hatsushima": {
       "slug": "hatsushima",
       "name": "初島灯台",
       "source_url": "https://www.tokokai.org/tourlight/tourlight06/",
-      "sha256": "08178b61c2c63d62a7856dc06e6f2fb9df9eb99c095658c9f9289277c38e5266",
-      "normalized_length": 2294
+      "sha256": "45197e1ee859f67adb0386d36fffa6ee49aae7f1ca292ad07e7007886dd7bf55",
+      "normalized_length": 2380
     },
     "omaesaki": {
       "slug": "omaesaki",
       "name": "御前埼灯台",
       "source_url": "https://www.tokokai.org/tourlight/tourlight07/",
-      "sha256": "e16d7452a5b2ad0b197436ed6343c7c9e529fbc6c814075d343a3ecb22600e6a",
-      "normalized_length": 2619
+      "sha256": "c16fe8640cf04f2a0555d353202cbddfdd2b895a0f59ad454618262bfc1d2d78",
+      "normalized_length": 2542
     },
     "anorisaki": {
       "slug": "anorisaki",
@@ -83,29 +83,29 @@
       "slug": "tsunoshima",
       "name": "角島灯台",
       "source_url": "https://www.tokokai.org/tourlight/tourlight11/",
-      "sha256": "2fd213425a44a1be3367f808fb33bd3787b91c6de1657eabae941bf36d72d1ac",
-      "normalized_length": 1757
+      "sha256": "6b8e3cfc7e52af7386ae32f4e456318756fb3c74ad8e2b414b5dedca3dc5d12d",
+      "normalized_length": 1918
     },
     "izumo-hinomisaki": {
       "slug": "izumo-hinomisaki",
       "name": "出雲日御碕灯台",
       "source_url": "https://www.tokokai.org/tourlight/tourlight12/",
-      "sha256": "4f65af759f4dc30b6681c35ebce838a30462c077f428e0051eb464d524197ecb",
-      "normalized_length": 2624
+      "sha256": "7cb411c08aa5ccc91f880786a48459b5d475c83b8cfe58745f10a5240516b18a",
+      "normalized_length": 2653
     },
     "toimisaki": {
       "slug": "toimisaki",
       "name": "都井岬灯台",
       "source_url": "https://www.tokokai.org/tourlight/tourlight13/",
-      "sha256": "38052f76bc899b31eb15f073d88708acaf3c0bd5f46a9340b52fc3afc2559c27",
-      "normalized_length": 2579
+      "sha256": "f7ea8febfc2e10062a5383c96247dd11f6858f937dd9ce88e36ebdca488bce61",
+      "normalized_length": 2415
     },
     "zanpamisaki": {
       "slug": "zanpamisaki",
       "name": "残波岬灯台",
       "source_url": "https://www.tokokai.org/tourlight/tourlight14/",
-      "sha256": "0f497d95c87af58a14a23a16e78cd4ea734e261e7fe89a023e865afce2107707",
-      "normalized_length": 3044
+      "sha256": "6c9e6ac33edc45c76af68e88d7b1132a8cdd733d28caac595c8e731366a40b1d",
+      "normalized_length": 3144
     },
     "hennasaki": {
       "slug": "hennasaki",
