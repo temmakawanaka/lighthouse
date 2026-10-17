@@ -5,6 +5,7 @@ import { once } from "node:events";
 import { createStaticServer } from "./serve-static.mjs";
 
 const catalog = JSON.parse(await readFile("src/data/lighthouses.json", "utf8"));
+const reviews = JSON.parse(await readFile("src/data/visit-reviews.json", "utf8"));
 const server = createStaticServer();
 server.listen(0, "127.0.0.1");
 await once(server, "listening");
@@ -23,7 +24,13 @@ try {
       assert(html.includes("現地でスタンプを獲得"), path);
       if (record.is_visitable) {
         assert(html.includes("参観情報の確認日"), path);
-        assert(html.includes("2026年9月9日"), path);
+        const checkedAt = reviews[record.slug]?.checked_at;
+        assert.match(checkedAt ?? "", /^\d{4}-\d{2}-\d{2}$/, path);
+        const [year, month, day] = checkedAt.split("-").map(Number);
+        assert(html.includes(`${year}年${month}月${day}日`), path);
+        if (reviews[record.slug].notice) {
+          assert(html.includes(reviews[record.slug].notice), path);
+        }
         assert(html.includes(record.source_urls.find((url) => /\/tourlight\/tourlight\d+\//.test(url))), path);
       }
     }
