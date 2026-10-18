@@ -2,13 +2,6 @@ name: Frontend CI
 
 on:
   pull_request:
-    paths:
-      - "frontend/**"
-      - "backend/app/db/seeds/lighthouses.json"
-      - "package.json"
-      - "scripts/**"
-      - ".github/workflows/frontend-ci.yml"
-      - "docs/**"
   push:
     branches:
       - main
