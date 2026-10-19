@@ -187,3 +187,5 @@ cd backend
 alembic revision --autogenerate -m "変更内容の説明"
 alembic upgrade head
 ```
+
+<!-- Temporary CI trigger verification. This draft PR must not be merged. -->
