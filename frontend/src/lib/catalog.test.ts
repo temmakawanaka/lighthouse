@@ -26,6 +26,15 @@ describe("bundled lighthouse directory", () => {
     expect(getCatalogLighthouse("missing")).toBeUndefined();
   });
 
+  it("keeps Hennasaki's special opening separate from ordinary visitor information", () => {
+    const record = getCatalogLighthouse("hennasaki");
+    expect(record?.visit_checked_at).toBe("2026-10-20");
+    expect(record?.visit_notice).toContain("2026年10月25日9:30〜16:00");
+    expect(record?.visit_notice).toContain("10月23日12:00");
+    expect(record?.admission_info).toContain("300円");
+    expect(record?.visit_info).toContain("10〜2月13:00〜16:30");
+  });
+
   it.each(["御前崎", "御前埼", "ｵﾏｴｻｷ", "ＯＭＡＥＳＡＫＩ", "静岡 御前"])("finds the same lighthouse for %s", (q) => {
     expect(searchCatalog(parseListQuery({ q })).items.map((record) => record.slug)).toEqual(["omaesaki"]);
   });
