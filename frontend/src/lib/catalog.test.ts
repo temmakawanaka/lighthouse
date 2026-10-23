@@ -26,13 +26,44 @@ describe("bundled lighthouse directory", () => {
     expect(getCatalogLighthouse("missing")).toBeUndefined();
   });
 
-  it("keeps Hennasaki's special opening separate from ordinary visitor information", () => {
+  it("keeps Hennasaki's canceled special event separate from ordinary visitor information", () => {
     const record = getCatalogLighthouse("hennasaki");
-    expect(record?.visit_checked_at).toBe("2026-10-20");
-    expect(record?.visit_notice).toContain("2026年10月25日9:30〜16:00");
-    expect(record?.visit_notice).toContain("10月23日12:00");
+    expect(record?.visit_checked_at).toBe("2026-10-23");
+    expect(record?.visit_notice).toContain("2026年10月25日に予定されていた無料の一般公開イベント");
+    expect(record?.visit_notice).toContain("台風接近に伴い中止");
+    expect(record?.is_visitable).toBe(true);
+    expect(record?.visit_notice).toContain("通常参観の実施状況は最新の公式案内");
     expect(record?.admission_info).toContain("300円");
     expect(record?.visit_info).toContain("10〜2月13:00〜16:30");
+  });
+
+  it("keeps Zanpamisaki's canceled maintenance conditional on weather and preserves lunch closure", () => {
+    const record = getCatalogLighthouse("zanpamisaki");
+    expect(record?.visit_checked_at).toBe("2026-10-23");
+    expect(record?.visit_notice).toContain("参観休止は取り消されました");
+    expect(record?.visit_notice).toContain("天候によって参観休止となる場合");
+    expect(record?.visit_notice).toContain("通常の12:00〜13:00の昼休業は継続");
+    expect(record?.is_visitable).toBe(true);
+    expect(record?.admission_info).toContain("300円");
+  });
+
+  it("keeps upcoming Shiriyazaki closures and removes the expired date", () => {
+    const record = getCatalogLighthouse("shiriyazaki");
+    expect(record?.visit_checked_at).toBe("2026-10-23");
+    expect(record?.visit_notice).toContain("10月27日9:00〜10:00");
+    expect(record?.visit_notice).toContain("11月4日終日");
+    expect(record?.visit_notice).not.toContain("10月20日");
+  });
+
+  it("keeps Tsunoshima reopening dependent on work completion and its outage contact temporary", () => {
+    const record = getCatalogLighthouse("tsunoshima");
+    expect(record?.visit_checked_at).toBe("2026-10-23");
+    expect(record?.visit_notice).toContain("11月20日9:00〜12:00");
+    expect(record?.visit_notice).toContain("作業終了後に再開予定");
+    expect(record?.visit_notice).toContain("復旧までのお問い合わせ");
+    expect(record?.visit_notice).toContain("03-3501-1054／info@tokokai.org");
+    expect(record?.visit_notice).not.toContain("10月19日");
+    expect(record?.is_visitable).toBe(true);
   });
 
   it.each(["御前崎", "御前埼", "ｵﾏｴｻｷ", "ＯＭＡＥＳＡＫＩ", "静岡 御前"])("finds the same lighthouse for %s", (q) => {
